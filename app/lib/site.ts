@@ -12,12 +12,14 @@ export const site = {
   name: "OSCOMP IT Solution",
   shortName: "OSCOMP",
   description:
-    "OSCOMP provides CCTV sales and installation, computer repairs, and IT solutions across CALABARZON from Candelaria, Quezon.",
+    "OSCOMP provides CCTV sales, security camera installation, maintenance, and support across CALABARZON from Candelaria, Quezon.",
   keywords: [
     "OSCOMP",
     "CALABARZON CCTV",
     "Candelaria CCTV",
     "CCTV installation Candelaria",
+    "security camera installation Quezon",
+    "CCTV maintenance CALABARZON",
     "computer repair Candelaria",
     "IT solutions Quezon"
   ],
@@ -37,7 +39,7 @@ export const site = {
 export const routes = [
   { path: "/", label: "Home", priority: 1 },
   { path: "/services", label: "Services", priority: 0.9 },
-  { path: "/quotation", label: "Quotation", priority: 0.8 },
+  { path: "/quotation", label: "Inquiry", priority: 0.8 },
   { path: "/projects", label: "Projects", priority: 0.6 },
   { path: "/contact", label: "Contact", priority: 0.8 }
 ];

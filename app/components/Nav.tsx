@@ -65,7 +65,7 @@ export function Nav() {
             href="/quotation"
             onClick={() => setOpenPathname(null)}
           >
-            Get Quote
+            Inquire Now
           </Link>
         </div>
       </div>

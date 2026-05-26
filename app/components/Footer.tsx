@@ -42,7 +42,7 @@ export function Footer() {
               />
               <span>{site.shortName}</span>
             </div>
-            <p className="text-muted copyright">IT Solutions Services.</p>
+            <p className="text-muted copyright">CCTV &amp; Security Services.</p>
           </div>
         </div>
         <hr />

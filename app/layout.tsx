@@ -8,7 +8,7 @@ import { site, siteUrl } from "./lib/site";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "OSCOMP IT Solution | CCTV, Computer Repair & IT Services",
+    default: "OSCOMP IT Solution | CCTV & Security Camera Installation",
     template: "%s | OSCOMP IT Solution"
   },
   description: site.description,

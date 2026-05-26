@@ -4,9 +4,9 @@ import { LandingContact } from "./components/LandingContact";
 import { metadataFor } from "./lib/site";
 
 export const metadata: Metadata = metadataFor({
-  title: "CCTV Installation, Computer Repair & IT Services",
+  title: "CCTV Installation & Security Camera Services",
   description:
-    "OSCOMP offers CCTV sales and installation, computer repairs, and practical IT solutions for homes and businesses across CALABARZON.",
+    "OSCOMP provides CCTV sales, security camera installation, maintenance, and support for homes and businesses across CALABARZON.",
   path: "/"
 });
 
@@ -38,34 +38,54 @@ const brandLinks = [
   }
 ];
 
-const services = [
+const securityFeatures = [
+  {
+    title: "CCTV Planning and Installation",
+    description:
+      "Plan camera coverage for homes, shops, offices, and business sites with practical placement and setup support.",
+    image: "/assets/img/services/cctv-installation/Service-slideshow-03.jpg",
+    alt: "CCTV camera installed by OSCOMP",
+    cta: "Send an inquiry"
+  },
+  {
+    title: "Camera Setup and Maintenance",
+    description:
+      "Configure cameras, recorders, storage, mobile viewing, and ongoing troubleshooting for supported CCTV systems.",
+    image: "/assets/img/services/cctv-installation/Service-slideshow-08.jpg",
+    alt: "Security camera system configured by OSCOMP",
+    cta: "Ask about maintenance"
+  },
+  {
+    title: "Security Brands and Warranty",
+    description:
+      "Install supported brands including Hikvision, Dahua, ACTi, Axis, and TP-Link with warranty support on eligible devices.",
+    image: "/assets/img/services/cctv-installation/Service-slideshow-10.jpg",
+    alt: "CCTV security equipment prepared for installation",
+    cta: "Send an inquiry"
+  }
+];
+
+const secondaryServices = [
   {
     title: "Computer Repairs",
     description:
-      "Hardware support, Windows installation, diagnostics, and practical repairs for computers, laptops, devices, and accessories.",
+      "Hardware diagnostics, Windows installation, and practical device support remain available through OSCOMP services.",
     icon: "computer",
     href: "/services"
   },
   {
-    title: "CCTV Sales and Installation",
-    description:
-      "Security camera planning, installation, configuration, warranty support, and troubleshooting for homes and businesses.",
-    icon: "photo_camera",
-    href: "/quotation"
-  },
-  {
     title: "IT Solutions",
     description:
-      "Networking, cybersecurity, office applications, business device setup, and technology support for daily operations.",
+      "Networking, cybersecurity, office applications, and business technology support are still offered as secondary services.",
     icon: "settings_ethernet",
     href: "/services"
   }
 ];
 
 const highlights = [
-  "CCTV brands include Hikvision, Dahua, ACTi, Axis, and TP-Link",
-  "Free 1-year warranty on supported CCTV devices",
-  "Computer repair, installation, networking, and cybersecurity support"
+  "CCTV installation and security camera support across CALABARZON",
+  "Supported brands include Hikvision, Dahua, ACTi, Axis, and TP-Link",
+  "Free 1-year warranty on supported CCTV devices"
 ];
 
 export default function HomePage() {
@@ -75,19 +95,22 @@ export default function HomePage() {
         <div className="container">
           <div className="hero-grid">
             <div className="hero-copy">
-              <p className="eyebrow">One of the best in CALABARZON</p>
-              <h1>Computer Repairs, CCTV Installation &amp; IT Services</h1>
+              <p className="eyebrow">CCTV installer in CALABARZON</p>
+              <h1>CCTV Installation and Security Camera Support</h1>
               <p className="hero-lead">
-                OSCOMP helps homes and businesses in Candelaria, Quezon with
-                security camera systems, computer repair, and dependable IT
-                support.
+                OSCOMP helps homes and businesses secure their property with
+                CCTV sales, installation, camera setup, maintenance, and
+                troubleshooting support.
               </p>
               <div className="hero-actions">
-                <Link className="btn btn-primary shadow" href="/quotation">
-                  Request a Quotation
-                </Link>
-                <Link className="btn btn-outline-primary" href="/services">
-                  Explore Services
+                <Link
+                  className="btn btn-primary hero-primary-cta"
+                  href="/quotation"
+                >
+                  <span>Inquire Now</span>
+                  <span className="material-icons" aria-hidden="true">
+                    arrow_forward
+                  </span>
                 </Link>
               </div>
               <ul className="hero-highlights">
@@ -99,18 +122,18 @@ export default function HomePage() {
             <div className="hero-media-grid" aria-label="OSCOMP service images">
               <img
                 className="hero-media hero-media-large"
-                src="/assets/img/products/computer-repair.jpg"
-                alt="OSCOMP computer repair service"
-              />
-              <img
-                className="hero-media"
-                src="/assets/img/products/HP-1.jpg"
-                alt="Computer hardware serviced by OSCOMP"
-              />
-              <img
-                className="hero-media"
                 src="/assets/img/services/cctv-installation/Service-slideshow-01.jpg"
-                alt="CCTV installation completed by OSCOMP"
+                alt="OSCOMP CCTV installation work"
+              />
+              <img
+                className="hero-media"
+                src="/assets/img/services/cctv-installation/Service-slideshow-09.jpg"
+                alt="CCTV monitoring setup completed by OSCOMP"
+              />
+              <img
+                className="hero-media"
+                src="/assets/img/services/cctv-installation/Service-slideshow-14.jpg"
+                alt="Security camera equipment prepared for installation"
               />
             </div>
           </div>
@@ -121,58 +144,29 @@ export default function HomePage() {
         <div className="container">
           <div className="section-heading">
             <p className="eyebrow">Featured services</p>
-            <h2>Security, repair, and IT support in one place</h2>
+            <h2>Security camera service from planning to support</h2>
             <p>
-              Request a custom security review or contact OSCOMP for practical
-              technology support.
+              Build a CCTV setup around your site, coverage needs, equipment,
+              and maintenance requirements.
             </p>
           </div>
           <div className="feature-strip">
-            <article>
-              <img
-                src="/assets/img/slideshow/Slideshow-3.jpg"
-                alt="CCTV security camera setup"
-                loading="lazy"
-              />
-              <div>
-                <h3>CCTV Sales and Installation</h3>
-                <p>
-                  Plan and install a camera system with supported brands and
-                  post-installation troubleshooting.
-                </p>
-                <Link href="/quotation">Request a quotation</Link>
-              </div>
-            </article>
-            <article>
-              <img
-                src="/assets/img/slideshow/Slideshow-2.jpg"
-                alt="Computer repair tools and hardware"
-                loading="lazy"
-              />
-              <div>
-                <h3>Computer Repairs</h3>
-                <p>
-                  Get help with laptop and desktop repair, Windows installation,
-                  and device troubleshooting.
-                </p>
-                <Link href="/services">View repair services</Link>
-              </div>
-            </article>
-            <article>
-              <img
-                src="/assets/img/slideshow/Slideshow-1.jpg"
-                alt="IT support and networking equipment"
-                loading="lazy"
-              />
-              <div>
-                <h3>IT Solutions</h3>
-                <p>
-                  Support for networking, cybersecurity, office applications,
-                  and business technology needs.
-                </p>
-                <Link href="/quotation">Request support</Link>
-              </div>
-            </article>
+            {securityFeatures.map((feature) => (
+              <Link
+                className="feature-tile-link"
+                href="/quotation"
+                key={feature.title}
+              >
+                <article>
+                  <img src={feature.image} alt={feature.alt} loading="lazy" />
+                  <div>
+                    <h3>{feature.title}</h3>
+                    <p>{feature.description}</p>
+                    <span className="feature-tile-cta">{feature.cta}</span>
+                  </div>
+                </article>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
@@ -201,11 +195,15 @@ export default function HomePage() {
       <section className="section-pad">
         <div className="container">
           <div className="section-heading">
-            <p className="eyebrow">Our services</p>
-            <h2>What we can do for you</h2>
+            <p className="eyebrow">Also available</p>
+            <h2>Other OSCOMP services</h2>
+            <p>
+              Computer repair and IT support are still offered, while this page
+              currently focuses on CCTV and security installation.
+            </p>
           </div>
-          <div className="service-grid">
-            {services.map((service) => (
+          <div className="service-grid service-grid-secondary">
+            {secondaryServices.map((service) => (
               <article className="service-card" key={service.title}>
                 <span className="service-icon material-icons" aria-hidden="true">
                   {service.icon}

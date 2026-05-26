@@ -28,17 +28,14 @@ export function LandingContact() {
     <div className="landing-contact">
       <div className="landing-contact-copy">
         <p className="eyebrow">Contact OSCOMP</p>
-        <h2>Ready for a service review?</h2>
+        <h2>Ready to plan your CCTV setup?</h2>
         <p>
-          Send the project details and OSCOMP will review your CCTV, repair, or
-          IT support request.
+          Send your location, coverage needs, and security camera questions so
+          OSCOMP can review the right next step.
         </p>
         <div className="landing-contact-actions">
           <Link className="btn btn-primary shadow" href="/quotation">
-            Request a Quotation
-          </Link>
-          <Link className="btn btn-outline-primary" href="/contact">
-            Contact page
+            Inquire Now
           </Link>
         </div>
       </div>

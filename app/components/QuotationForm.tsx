@@ -4,6 +4,8 @@ import { FormEvent, useState } from "react";
 
 const serviceOptions = [
   "CCTV Sales and Installation",
+  "CCTV Maintenance and Troubleshooting",
+  "Security Camera Setup",
   "Computer Repairs",
   "IT Solutions",
   "Networking and Cybersecurity",
@@ -48,13 +50,13 @@ export function QuotationForm() {
       const result = (await response.json()) as { error?: string };
 
       if (!response.ok) {
-        throw new Error(result.error || "Unable to send quotation request.");
+        throw new Error(result.error || "Unable to send inquiry.");
       }
 
       form.reset();
       setStatus({
         type: "success",
-        message: "Quotation request sent. OSCOMP will review the details."
+        message: "Inquiry sent. OSCOMP will review the details."
       });
     } catch (error) {
       setStatus({
@@ -62,7 +64,7 @@ export function QuotationForm() {
         message:
           error instanceof Error
             ? error.message
-            : "Unable to send quotation request."
+            : "Unable to send inquiry."
       });
     } finally {
       setIsSubmitting(false);
@@ -115,11 +117,11 @@ export function QuotationForm() {
           required
           rows={7}
           maxLength={1000}
-          placeholder="Tell us what you need, preferred schedule, and any site details."
+          placeholder="Tell us about the site, cameras needed, preferred schedule, and any security concerns."
         />
       </label>
       <button className="btn btn-primary shadow" type="submit" disabled={isSubmitting}>
-        {isSubmitting ? "Sending..." : "Send quotation request"}
+        {isSubmitting ? "Sending..." : "Send inquiry"}
       </button>
       {status.type !== "idle" ? (
         <p className={`quotation-status quotation-status-${status.type}`} role="status">

@@ -32,7 +32,7 @@ export async function POST(request: Request) {
   try {
     body = (await request.json()) as QuotationRequest;
   } catch {
-    return NextResponse.json({ error: "Invalid quotation payload." }, { status: 400 });
+    return NextResponse.json({ error: "Invalid inquiry payload." }, { status: 400 });
   }
 
   const quotation = {
@@ -64,7 +64,7 @@ export async function POST(request: Request) {
 
   if (!topic) {
     return NextResponse.json(
-      { error: "Quotation notification is not configured." },
+      { error: "Inquiry notification is not configured." },
       { status: 500 }
     );
   }
@@ -73,7 +73,7 @@ export async function POST(request: Request) {
   const topicPath = topic.replace(/^\/+/, "");
   const token = process.env.NTFY_TOKEN?.trim();
   const message = [
-    "New OSCOMP quotation request",
+    "New OSCOMP inquiry",
     "",
     `Name: ${quotation.name}`,
     `Phone: ${quotation.phone}`,
@@ -91,21 +91,21 @@ export async function POST(request: Request) {
       headers: {
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
         Priority: "4",
-        Tags: "moneybag,computer",
-        Title: "OSCOMP quotation request"
+        Tags: "camera,shield",
+        Title: "OSCOMP inquiry"
       },
       body: message
     });
 
     if (!response.ok) {
       return NextResponse.json(
-        { error: "Unable to send quotation notification." },
+        { error: "Unable to send inquiry notification." },
         { status: 502 }
       );
     }
   } catch {
     return NextResponse.json(
-      { error: "Unable to reach quotation notification service." },
+      { error: "Unable to reach inquiry notification service." },
       { status: 502 }
     );
   }

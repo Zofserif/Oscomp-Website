@@ -48,7 +48,7 @@ const services = [
       "Indoor and outdoor camera packages",
       "Post-installation troubleshooting"
     ],
-    cta: "Request a quotation",
+    cta: "Send an inquiry",
     href: "/quotation",
     images: cctvImages,
     alt: "OSCOMP CCTV installation work"
@@ -65,7 +65,7 @@ const services = [
       "Landline repair",
       "Biometrics repair and installation"
     ],
-    cta: "Contact for repair",
+    cta: "Send repair inquiry",
     href: "/quotation",
     images: repairImages,
     alt: "OSCOMP computer and electronic repair work"
@@ -82,7 +82,7 @@ const services = [
       "Premium application installation",
       "Office application installation"
     ],
-    cta: "Request IT support",
+    cta: "Send IT inquiry",
     href: "/quotation",
     images: itImages,
     alt: "OSCOMP IT solution service"

@@ -52,7 +52,7 @@ export default function ContactPage() {
                 <p className="eyebrow">Contact information</p>
                 <h2>Talk to OSCOMP about your technology needs</h2>
                 <p>
-                  Use the details below for direct support, quotations, location
+                  Use the details below for direct support, inquiries, location
                   questions, or follow-up on an ongoing service request.
                 </p>
               </div>
