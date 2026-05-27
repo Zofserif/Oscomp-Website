@@ -1560,6 +1560,8 @@ a:hover {
     justify-content: center;
     gap: 0.45rem;
     min-width: 0;
+    width: 100%;
+    justify-self: stretch;
     height: 5.25rem;
     padding: 0.65rem;
     background: var(--surface);
