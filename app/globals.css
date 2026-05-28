@@ -17,6 +17,7 @@
 html {
     scroll-behavior: smooth;
     scroll-padding-top: calc(var(--nav-height) + 1rem);
+    overflow-x: hidden;
 }
 
 body {
@@ -32,6 +33,7 @@ body {
         BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
+    overflow-x: hidden;
 }
 
 img,
@@ -1018,16 +1020,15 @@ a:hover {
 }
 
 .image-gallery-strip {
-    display: grid;
-    grid-auto-columns: 86px;
-    grid-auto-flow: column;
+    display: flex;
+    flex-wrap: wrap;
     gap: 0.55rem;
     margin-top: 0.75rem;
-    overflow-x: auto;
     padding-bottom: 0.2rem;
 }
 
 .image-gallery-strip button {
+    flex: 0 1 86px;
     padding: 0;
     overflow: hidden;
     background: #fff;
