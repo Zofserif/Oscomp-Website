@@ -1,8 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { CompletedProject } from "../lib/projects";
-import { formatProjectDate } from "../lib/projects";
+import type { CompletedProject, ProjectMedia } from "../lib/projects";
+import {
+  formatProjectDate,
+  getProjectImages,
+  getProjectThumbnail,
+  getYoutubeEmbedSrc,
+  getYoutubePosterSrc,
+} from "../lib/projects";
 
 type ProjectGalleryProps = {
   projects: CompletedProject[];
@@ -10,7 +16,7 @@ type ProjectGalleryProps = {
 
 export function ProjectGallery({ projects }: ProjectGalleryProps) {
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
-  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [activeMediaIndex, setActiveMediaIndex] = useState(0);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const lastTriggerRef = useRef<HTMLElement | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -19,10 +25,11 @@ export function ProjectGallery({ projects }: ProjectGalleryProps) {
     () => projects.find((project) => project.slug === activeSlug) ?? null,
     [activeSlug, projects]
   );
+  const activeMedia = activeProject?.media[activeMediaIndex] ?? null;
 
   const closeModal = useCallback(() => {
     setActiveSlug(null);
-    setActiveImageIndex(0);
+    setActiveMediaIndex(0);
     window.setTimeout(() => lastTriggerRef.current?.focus(), 0);
   }, []);
 
@@ -31,8 +38,8 @@ export function ProjectGallery({ projects }: ProjectGalleryProps) {
       return;
     }
 
-    setActiveImageIndex((current) =>
-      current === 0 ? activeProject.images.length - 1 : current - 1
+    setActiveMediaIndex((current) =>
+      current === 0 ? activeProject.media.length - 1 : current - 1
     );
   }, [activeProject]);
 
@@ -41,8 +48,8 @@ export function ProjectGallery({ projects }: ProjectGalleryProps) {
       return;
     }
 
-    setActiveImageIndex((current) =>
-      current === activeProject.images.length - 1 ? 0 : current + 1
+    setActiveMediaIndex((current) =>
+      current === activeProject.media.length - 1 ? 0 : current + 1
     );
   }, [activeProject]);
 
@@ -104,7 +111,116 @@ export function ProjectGallery({ projects }: ProjectGalleryProps) {
   function openProject(slug: string, trigger: HTMLElement) {
     lastTriggerRef.current = trigger;
     setActiveSlug(slug);
-    setActiveImageIndex(0);
+    setActiveMediaIndex(0);
+  }
+
+  function formatMediaCount(project: CompletedProject) {
+    const imageCount = getProjectImages(project).length;
+    const videoCount = project.media.filter(
+      (item) => item.type === "youtube-video"
+    ).length;
+    const parts = [];
+
+    if (imageCount > 0) {
+      parts.push(`${imageCount} ${imageCount === 1 ? "photo" : "photos"}`);
+    }
+
+    if (videoCount > 0) {
+      parts.push(`${videoCount} ${videoCount === 1 ? "video" : "videos"}`);
+    }
+
+    return parts.join(" / ");
+  }
+
+  function renderCardMedia(project: CompletedProject) {
+    const thumbnail = getProjectThumbnail(project);
+
+    if (!thumbnail) {
+      return null;
+    }
+
+    if (thumbnail.type === "image") {
+      return (
+        <img
+          src={thumbnail.src}
+          alt={project.alt}
+          loading="lazy"
+          decoding="async"
+        />
+      );
+    }
+
+    const poster = getYoutubePosterSrc(thumbnail);
+
+    if (poster) {
+      return (
+        <img
+          src={poster}
+          alt={thumbnail.title}
+          loading="lazy"
+          decoding="async"
+        />
+      );
+    }
+
+    return (
+      <div className="project-video-placeholder" aria-hidden="true">
+        <span className="material-icons">play_circle</span>
+      </div>
+    );
+  }
+
+  function renderModalMedia(media: ProjectMedia, project: CompletedProject) {
+    if (media.type === "image") {
+      return (
+        <img
+          className="project-modal-image"
+          src={media.src}
+          alt={media.alt}
+        />
+      );
+    }
+
+    const embedSrc = getYoutubeEmbedSrc(media.url);
+
+    if (!embedSrc) {
+      return (
+        <div className="project-video-placeholder" role="img" aria-label={media.title}>
+          <span className="material-icons" aria-hidden="true">
+            play_circle
+          </span>
+        </div>
+      );
+    }
+
+    return (
+      <iframe
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowFullScreen
+        className="project-modal-video"
+        key={media.url}
+        src={embedSrc}
+        title={media.title || `${project.title} video`}
+      />
+    );
+  }
+
+  function renderThumbnail(media: ProjectMedia) {
+    if (media.type === "image") {
+      return <img src={media.src} alt="" loading="lazy" decoding="async" />;
+    }
+
+    const poster = getYoutubePosterSrc(media);
+
+    if (poster) {
+      return <img src={poster} alt="" loading="lazy" decoding="async" />;
+    }
+
+    return (
+      <span className="project-video-thumb" aria-hidden="true">
+        <span className="material-icons">play_arrow</span>
+      </span>
+    );
   }
 
   return (
@@ -116,7 +232,7 @@ export function ProjectGallery({ projects }: ProjectGalleryProps) {
             href={`#${project.slug}-photos`}
             key={project.slug}
             role="button"
-            aria-label={`View project photos for ${project.title}`}
+            aria-label={`View project media for ${project.title}`}
             onClick={(event) => {
               event.preventDefault();
               openProject(project.slug, event.currentTarget);
@@ -129,17 +245,12 @@ export function ProjectGallery({ projects }: ProjectGalleryProps) {
             }}
           >
             <div className="project-card-media">
-              <img
-                src={project.images[0]}
-                alt={project.alt}
-                loading="lazy"
-                decoding="async"
-              />
+              {renderCardMedia(project)}
               <span className="project-photo-count">
                 <span className="material-icons" aria-hidden="true">
-                  photo_library
+                  collections
                 </span>
-                {project.images.length} photos
+                {formatMediaCount(project)}
               </span>
             </div>
             <div className="project-card-body">
@@ -159,7 +270,7 @@ export function ProjectGallery({ projects }: ProjectGalleryProps) {
                 ))}
               </div>
               <span className="project-card-action">
-                View project photos
+                View project media
                 <span className="material-icons" aria-hidden="true">
                   arrow_forward
                 </span>
@@ -192,7 +303,7 @@ export function ProjectGallery({ projects }: ProjectGalleryProps) {
               <button
                 className="project-modal-close"
                 type="button"
-                aria-label="Close project photos"
+                aria-label="Close project media"
                 onClick={closeModal}
                 ref={closeButtonRef}
               >
@@ -204,27 +315,23 @@ export function ProjectGallery({ projects }: ProjectGalleryProps) {
 
             <div className="project-modal-grid">
               <div className="project-modal-media">
-                <img
-                  className="project-modal-image"
-                  src={activeProject.images[activeImageIndex]}
-                  alt={`${activeProject.alt} ${activeImageIndex + 1}`}
-                />
-                {activeProject.images.length > 1 ? (
+                {activeMedia ? renderModalMedia(activeMedia, activeProject) : null}
+                {activeProject.media.length > 1 ? (
                   <div
                     className="project-modal-controls"
-                    aria-label={`${activeProject.title} photo controls`}
+                    aria-label={`${activeProject.title} media controls`}
                   >
                     <button
                       type="button"
                       onClick={showPrevious}
-                      aria-label="Show previous project photo"
+                      aria-label="Show previous project media"
                     >
                       <span aria-hidden="true">‹</span>
                     </button>
                     <button
                       type="button"
                       onClick={showNext}
-                      aria-label="Show next project photo"
+                      aria-label="Show next project media"
                     >
                       <span aria-hidden="true">›</span>
                     </button>
@@ -233,20 +340,26 @@ export function ProjectGallery({ projects }: ProjectGalleryProps) {
                 <div
                   className="project-modal-thumbnails"
                   id={`${activeProject.slug}-photos`}
-                  aria-label={`${activeProject.title} photo thumbnails`}
+                  aria-label={`${activeProject.title} media thumbnails`}
                 >
-                  {activeProject.images.map((image, index) => (
+                  {activeProject.media.map((media, index) => (
                     <button
-                      className={index === activeImageIndex ? "active" : ""}
-                      key={image}
-                      type="button"
-                      aria-label={`Show project photo ${index + 1}`}
-                      aria-current={
-                        index === activeImageIndex ? "true" : undefined
+                      className={index === activeMediaIndex ? "active" : ""}
+                      key={
+                        media.type === "image"
+                          ? media.src
+                          : `youtube-video-${media.url}`
                       }
-                      onClick={() => setActiveImageIndex(index)}
+                      type="button"
+                      aria-label={`Show project ${
+                        media.type === "image" ? "photo" : "video"
+                      } ${index + 1}`}
+                      aria-current={
+                        index === activeMediaIndex ? "true" : undefined
+                      }
+                      onClick={() => setActiveMediaIndex(index)}
                     >
-                      <img src={image} alt="" loading="lazy" decoding="async" />
+                      {renderThumbnail(media)}
                     </button>
                   ))}
                 </div>

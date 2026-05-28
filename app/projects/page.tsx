@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ProjectGallery } from "../components/ProjectGallery";
-import { sortedProjects } from "../lib/projects";
+import { getProjectImages, sortedProjects } from "../lib/projects";
 import { metadataFor, site, siteUrl } from "../lib/site";
 
 export const metadata: Metadata = metadataFor({
@@ -32,7 +32,7 @@ const projectsJsonLd = {
     about: project.tags,
     datePublished: project.completedAt,
     dateModified: project.updatedAt,
-    image: project.images.map((image) => `${siteUrl}${image}`),
+    image: getProjectImages(project).map((image) => `${siteUrl}${image.src}`),
     locationCreated: {
       "@type": "Place",
       name: project.location
@@ -69,12 +69,12 @@ export default function ProjectsPage() {
           <div className="projects-intro">
             <div>
               <p className="eyebrow">Past work</p>
-              <h2>Project stories with photos</h2>
+              <h2>Project stories with photos and videos</h2>
             </div>
             <p>
-              Click any project tile to view more photos. The project details
-              stay visible on this page so visitors and search engines can
-              understand the kind of work OSCOMP completes.
+              Click any project tile to view more project media. The project
+              details stay visible on this page so visitors and search engines
+              can understand the kind of work OSCOMP completes.
             </p>
           </div>
 

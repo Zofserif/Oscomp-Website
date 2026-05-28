@@ -679,16 +679,39 @@ a:hover {
     padding: 0 !important;
 }
 
+.project-card-media img,
+.project-video-placeholder {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+}
+
 .project-card-media img {
     transition: transform 180ms ease;
 }
 
+.project-video-placeholder {
+    display: grid;
+    place-items: center;
+    background:
+        linear-gradient(135deg, rgba(9, 105, 168, 0.2), rgba(10, 143, 119, 0.2)),
+        #172033;
+    color: #fff;
+}
+
+.project-video-placeholder .material-icons {
+    font-size: clamp(2.8rem, 8vw, 4.2rem);
+}
+
 .project-story-card:hover .project-card-media img,
-.project-story-card:focus-visible .project-card-media img {
+.project-story-card:focus-visible .project-card-media img,
+.project-story-card:hover .project-video-placeholder,
+.project-story-card:focus-visible .project-video-placeholder {
     transform: scale(1.03);
 }
 
-.project-blog-grid .project-story-card:first-child .project-card-media img {
+.project-blog-grid .project-story-card:first-child .project-card-media img,
+.project-blog-grid .project-story-card:first-child .project-video-placeholder {
     aspect-ratio: 16 / 9;
 }
 
@@ -862,13 +885,21 @@ a:hover {
     min-width: 0;
 }
 
-.project-modal-image {
+.project-modal-image,
+.project-modal-video {
     width: 100%;
     aspect-ratio: 16 / 10;
-    object-fit: cover;
     background: #e7edf5;
     border: 1px solid var(--line);
     border-radius: 8px;
+}
+
+.project-modal-image {
+    object-fit: cover;
+}
+
+.project-modal-video {
+    display: block;
 }
 
 .project-modal-controls {
@@ -921,10 +952,22 @@ a:hover {
     border-color: var(--brand-blue);
 }
 
-.project-modal-thumbnails img {
+.project-modal-thumbnails img,
+.project-video-thumb {
     width: 100%;
     aspect-ratio: 4 / 3;
     object-fit: cover;
+}
+
+.project-video-thumb {
+    display: grid;
+    place-items: center;
+    background: #172033;
+    color: #fff;
+}
+
+.project-video-thumb .material-icons {
+    font-size: 1.8rem;
 }
 
 .project-modal-copy {
@@ -1774,7 +1817,8 @@ footer .pt-3 {
         grid-column: span 1;
     }
 
-    .project-blog-grid .project-story-card:first-child .project-card-media img {
+    .project-blog-grid .project-story-card:first-child .project-card-media img,
+    .project-blog-grid .project-story-card:first-child .project-video-placeholder {
         aspect-ratio: 4 / 3;
     }
 
