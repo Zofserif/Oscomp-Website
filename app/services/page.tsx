@@ -7,23 +7,23 @@ export const metadata: Metadata = metadataFor({
   title: "Services",
   description:
     "Explore OSCOMP services including CCTV sales and installation, electronic device repair, computer repair, networking, cybersecurity, and IT support.",
-  path: "/services"
+  path: "/services",
 });
 
 const cctvImages = Array.from(
   { length: 15 },
   (_, index) =>
     `/assets/img/services/cctv-installation/Service-slideshow-${String(
-      index + 1
-    ).padStart(2, "0")}.jpg`
+      index + 1,
+    ).padStart(2, "0")}.jpg`,
 );
 
 const repairImages = Array.from(
   { length: 7 },
   (_, index) =>
     `/assets/img/services/computer-repair/Computer-repair-${String(
-      index + 1
-    ).padStart(2, "0")}.jpg`
+      index + 1,
+    ).padStart(2, "0")}.jpg`,
 );
 
 const itImages = Array.from(
@@ -31,8 +31,8 @@ const itImages = Array.from(
   (_, index) =>
     `/assets/img/services/it-solution/IT-Solution-${String(index + 1).padStart(
       2,
-      "0"
-    )}.jpg`
+      "0",
+    )}.jpg`,
 );
 
 const services = [
@@ -44,14 +44,29 @@ const services = [
       "OSCOMP installs and configures CCTV systems for homes and businesses with supported brands such as HIKVISION, Dahua, ACTi, Axis, and TP-Link. CCTV device support includes a free 1-year warranty and troubleshooting support.",
     bullets: [
       "Camera planning and installation",
-      "NVR setup and storage configuration",
-      "Indoor and outdoor camera packages",
-      "Post-installation troubleshooting"
+      "Security system setup and maintenance",
+      "Post-installation troubleshooting",
     ],
     cta: "Send an inquiry",
     href: "/quotation",
     images: cctvImages,
-    alt: "OSCOMP CCTV installation work"
+    alt: "OSCOMP CCTV installation work",
+  },
+  {
+    id: "security",
+    eyebrow: "Overall security",
+    title: "Attendance and Access Control Solutions",
+    description:
+      "OSCOMP provides comprehensive attendance and access control solutions for businesses and organizations.",
+    bullets: [
+      "Time and attendance tracking software",
+      "Door access control systems",
+      "Biometrics installation",
+    ],
+    cta: "Send security inquiry",
+    href: "/quotation",
+    images: repairImages,
+    alt: "OSCOMP attendace and access control system installation work",
   },
   {
     id: "repair",
@@ -63,12 +78,11 @@ const services = [
       "Computer and laptop repair",
       "Windows repair and installation",
       "Landline repair",
-      "Biometrics repair and installation"
     ],
     cta: "Send repair inquiry",
     href: "/quotation",
     images: repairImages,
-    alt: "OSCOMP computer and electronic repair work"
+    alt: "OSCOMP computer and electronic repair work",
   },
   {
     id: "it",
@@ -77,16 +91,15 @@ const services = [
     description:
       "OSCOMP helps clients solve technology problems across networking, cybersecurity, computer setup, office applications, and ongoing support needs.",
     bullets: [
-      "Networking and cybersecurity",
       "Computer and laptop Windows installation",
-      "Premium application installation",
-      "Office application installation"
+      "Networking and cybersecurity",
+      "Office application installation",
     ],
     cta: "Send IT inquiry",
     href: "/quotation",
     images: itImages,
-    alt: "OSCOMP IT solution service"
-  }
+    alt: "OSCOMP IT solution service",
+  },
 ];
 
 export default function ServicesPage() {
@@ -97,8 +110,8 @@ export default function ServicesPage() {
           <p className="eyebrow">Our services</p>
           <h1>What we can do for you</h1>
           <p>
-            Practical support for security camera installation, device repair,
-            networking, cybersecurity, and IT needs in Candelaria, Quezon.
+            Practical support for security camera installation and maintenance,
+            device repair, networking, and IT needs in CALABARZON.
           </p>
         </div>
       </section>
