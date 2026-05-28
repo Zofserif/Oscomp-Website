@@ -53,14 +53,6 @@ const propertyTypes = [
   "Other",
 ];
 
-const timelines = [
-  { value: "asap", label: "ASAP / Urgent" },
-  { value: "1-week", label: "Within 1 week" },
-  { value: "2-4-weeks", label: "2 – 4 weeks" },
-  { value: "1-3-months", label: "1 – 3 months" },
-  { value: "browsing", label: "Just browsing" },
-];
-
 const TOTAL_STEPS = 3;
 
 /* ------------------------------------------------------------------ */
@@ -75,7 +67,6 @@ interface FormData {
   location: string;
   propertyType: string;
   cameraCount: string;
-  timeline: string;
   message: string;
 }
 
@@ -94,7 +85,6 @@ const INITIAL: FormData = {
   location: "",
   propertyType: "",
   cameraCount: "",
-  timeline: "",
   message: "",
 };
 
@@ -121,7 +111,6 @@ function validateField(name: keyof FormData, value: string): string {
       return !v ? "Location is required" : "";
     case "propertyType":
     case "cameraCount":
-    case "timeline":
     case "message":
       return "";
     default:
@@ -132,7 +121,6 @@ function validateField(name: keyof FormData, value: string): string {
 function buildMessage(data: FormData): string {
   const parts: string[] = [];
   if (data.propertyType) parts.push(`Property: ${data.propertyType}`);
-  if (data.timeline) parts.push(`Timeline: ${data.timeline}`);
   if (data.message.trim()) parts.push(`Notes: ${data.message.trim()}`);
   return parts.join("\n") || "No additional details provided.";
 }
@@ -509,42 +497,31 @@ export function QuotationForm() {
       {step === 3 && (
         <div className="qf-step">
           {/* Property type */}
-          <label className="qf-field">
-            <span>Property type</span>
-            <select
-              name="propertyType"
-              value={data.propertyType}
-              onChange={(e) => update("propertyType", e.target.value)}
-            >
-              <option value="">Select property type (optional)</option>
-              {propertyTypes.map((pt) => (
-                <option key={pt} value={pt}>
-                  {pt}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          {/* Timeline */}
-          <fieldset className="qf-pill-group">
-            <legend className="qf-legend">Preferred timeline</legend>
-            <div className="qf-pills">
-              {timelines.map((tl) => (
+          <fieldset className="qf-service-group">
+            <legend className="qf-legend">Property type</legend>
+            <div className="qf-property-cards">
+              {propertyTypes.map((propertyType) => (
                 <button
                   type="button"
-                  key={tl.value}
-                  className={`qf-pill${data.timeline === tl.value ? " active" : ""}`}
+                  key={propertyType}
+                  className={`qf-service-card${data.propertyType === propertyType ? " active" : ""}`}
+                  aria-pressed={data.propertyType === propertyType}
                   onClick={() =>
                     update(
-                      "timeline",
-                      data.timeline === tl.value ? "" : tl.value,
+                      "propertyType",
+                      data.propertyType === propertyType ? "" : propertyType,
                     )
                   }
                 >
-                  {tl.label}
+                  <span>{propertyType}</span>
                 </button>
               ))}
             </div>
+            <input
+              type="hidden"
+              name="propertyType"
+              value={data.propertyType}
+            />
           </fieldset>
 
           {/* Free-text notes */}

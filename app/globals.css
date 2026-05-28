@@ -1548,7 +1548,8 @@ a:hover {
     color: #b42318;
 }
 
-.qf-service-cards {
+.qf-service-cards,
+.qf-property-cards {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.65rem;
@@ -1608,51 +1609,12 @@ a:hover {
     color: var(--brand-blue);
 }
 
-/* ---- Pill buttons ---- */
-
-.qf-pill-group {
-    border: none;
-    padding: 0;
-    margin: 1rem 0 0;
+.qf-property-cards {
+    margin-bottom: 1rem;
 }
 
-.qf-pills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-}
-
-.qf-pill {
-    display: inline-block;
-    padding: 0.55rem 1rem;
-    background: var(--surface);
-    border: 1.5px solid #cfd9e6;
-    border-radius: 999px;
-    cursor: pointer;
-    font: inherit;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--ink);
-    transition:
-        border-color 0.2s,
-        background 0.2s,
-        color 0.2s;
-}
-
-.qf-pill:hover {
-    border-color: var(--brand-blue);
-    background: rgba(9, 105, 168, 0.04);
-}
-
-.qf-pill:focus-visible {
-    outline: 2px solid var(--brand-blue);
-    outline-offset: 2px;
-}
-
-.qf-pill.active {
-    background: var(--brand-blue);
-    border-color: var(--brand-blue);
-    color: #fff;
+.qf-property-cards .qf-service-card > span:last-child {
+    white-space: normal;
 }
 
 /* ---- Character count ---- */
@@ -1667,7 +1629,8 @@ a:hover {
 /* ---- Mobile adjustments ---- */
 
 @media (max-width: 767.98px) {
-    .qf-service-cards {
+    .qf-service-cards,
+    .qf-property-cards {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
@@ -1676,14 +1639,6 @@ a:hover {
         font-size: 0.78rem;
     }
 
-    .qf-pills {
-        gap: 0.4rem;
-    }
-
-    .qf-pill {
-        padding: 0.5rem 0.85rem;
-        font-size: 0.8rem;
-    }
 }
 
 footer.bg-primary-gradient {
