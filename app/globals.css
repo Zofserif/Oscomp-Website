@@ -1012,6 +1012,121 @@ a:hover {
     letter-spacing: 0;
 }
 
+.service-page-hero .container {
+    max-width: 820px;
+}
+
+.service-back-link {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    color: var(--brand-blue);
+    font-weight: 800;
+    gap: 0.35rem;
+    text-decoration: none;
+}
+
+.service-back-link:hover,
+.service-back-link:focus {
+    color: var(--brand-blue-dark);
+    text-decoration: underline;
+}
+
+.service-back-link .material-icons {
+    font-size: 1.1rem;
+}
+
+.service-hero-actions {
+    margin-top: 1.75rem;
+}
+
+.service-detail-page-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: 2.5rem;
+    align-items: center;
+}
+
+.service-detail-page-grid > * {
+    min-width: 0;
+}
+
+.inquiry-modal-backdrop {
+    position: fixed;
+    z-index: 1100;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+    background: rgba(23, 32, 51, 0.58);
+}
+
+.inquiry-modal {
+    width: min(100%, 680px);
+    max-height: calc(100dvh - 2.5rem);
+    overflow: auto;
+    background: var(--surface);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 8px;
+    box-shadow: var(--shadow-md);
+}
+
+.inquiry-modal-header {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 1.5rem 1.5rem 0;
+}
+
+.inquiry-modal-header h2 {
+    margin-bottom: 0.5rem;
+    color: var(--ink);
+    font-weight: 800;
+    letter-spacing: 0;
+}
+
+.inquiry-modal-header p:not(.eyebrow) {
+    margin-bottom: 0;
+    color: var(--muted);
+}
+
+.inquiry-modal-close {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: var(--surface-soft);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--ink);
+}
+
+.inquiry-modal-close:hover,
+.inquiry-modal-close:focus {
+    background: rgba(9, 105, 168, 0.1);
+    color: var(--brand-blue);
+}
+
+.inquiry-modal-close .material-icons {
+    font-size: 1.25rem;
+}
+
+.inquiry-modal-form {
+    padding: 1.5rem;
+}
+
+.inquiry-property-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.inquiry-modal-actions {
+    margin-top: 0.5rem;
+}
+
 .image-gallery {
     width: 100%;
     min-width: 0;
@@ -1723,6 +1838,7 @@ footer .pt-3 {
 
     .hero-grid,
     .service-detail,
+    .service-detail-page-grid,
     .contact-layout,
     .contact-info-shell,
     .projects-intro,
@@ -1827,20 +1943,33 @@ footer .pt-3 {
         padding: 0.75rem;
     }
 
+    .inquiry-modal-backdrop {
+        align-items: stretch;
+        padding: 0.75rem;
+    }
+
     .project-modal {
         max-height: calc(100dvh - 1.5rem);
     }
 
+    .inquiry-modal {
+        max-height: calc(100dvh - 1.5rem);
+    }
+
     .project-modal-header,
-    .project-modal-grid {
+    .project-modal-grid,
+    .inquiry-modal-header,
+    .inquiry-modal-form {
         padding: 1rem;
     }
 
-    .project-modal-header {
+    .project-modal-header,
+    .inquiry-modal-header {
         padding-bottom: 0;
     }
 
-    .project-modal-header h2 {
+    .project-modal-header h2,
+    .inquiry-modal-header h2 {
         font-size: 1.35rem;
     }
 
@@ -1924,6 +2053,10 @@ footer .pt-3 {
 
     .quotation-form button {
         width: 100%;
+    }
+
+    .inquiry-modal-close {
+        width: 2.75rem;
     }
 
     footer .pt-3 {

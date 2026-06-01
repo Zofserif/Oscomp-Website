@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ImageCarousel } from "../components/ImageCarousel";
+import { services } from "../lib/services";
 import { metadataFor } from "../lib/site";
 
 export const metadata: Metadata = metadataFor({
@@ -9,98 +10,6 @@ export const metadata: Metadata = metadataFor({
     "Explore OSCOMP services including CCTV sales and installation, electronic device repair, computer repair, networking, cybersecurity, and IT support.",
   path: "/services",
 });
-
-const cctvImages = Array.from(
-  { length: 15 },
-  (_, index) =>
-    `/assets/img/services/cctv-installation/Service-slideshow-${String(
-      index + 1,
-    ).padStart(2, "0")}.jpg`,
-);
-
-const repairImages = Array.from(
-  { length: 7 },
-  (_, index) =>
-    `/assets/img/services/computer-repair/Computer-repair-${String(
-      index + 1,
-    ).padStart(2, "0")}.jpg`,
-);
-
-const itImages = Array.from(
-  { length: 4 },
-  (_, index) =>
-    `/assets/img/services/it-solution/IT-Solution-${String(index + 1).padStart(
-      2,
-      "0",
-    )}.jpg`,
-);
-
-const services = [
-  {
-    id: "cctv",
-    eyebrow: "Security systems",
-    title: "CCTV Sales and Installation",
-    description:
-      "OSCOMP installs and configures CCTV systems for homes and businesses with supported brands such as HIKVISION, Dahua, ACTi, Axis, and TP-Link. CCTV device support includes a free 1-year warranty and troubleshooting support.",
-    bullets: [
-      "Camera planning and installation",
-      "Security system setup and maintenance",
-      "Post-installation troubleshooting",
-    ],
-    cta: "Send an inquiry",
-    href: "/quotation",
-    images: cctvImages,
-    alt: "OSCOMP CCTV installation work",
-  },
-  {
-    id: "security",
-    eyebrow: "Overall security",
-    title: "Attendance and Access Control Solutions",
-    description:
-      "OSCOMP provides comprehensive attendance and access control solutions for businesses and organizations.",
-    bullets: [
-      "Time and attendance tracking software",
-      "Door access control systems",
-      "Biometrics installation",
-    ],
-    cta: "Send security inquiry",
-    href: "/quotation",
-    images: repairImages,
-    alt: "OSCOMP attendace and access control system installation work",
-  },
-  {
-    id: "repair",
-    eyebrow: "Device support",
-    title: "Electronic Device and Accessories Repairs",
-    description:
-      "OSCOMP supports common device repair needs, including diagnostics, Windows installation, and device setup for clients who need practical hardware help.",
-    bullets: [
-      "Computer and laptop repair",
-      "Windows repair and installation",
-      "Landline repair",
-    ],
-    cta: "Send repair inquiry",
-    href: "/quotation",
-    images: repairImages,
-    alt: "OSCOMP computer and electronic repair work",
-  },
-  {
-    id: "it",
-    eyebrow: "Business technology",
-    title: "IT Solutions",
-    description:
-      "OSCOMP helps clients solve technology problems across networking, cybersecurity, computer setup, office applications, and ongoing support needs.",
-    bullets: [
-      "Computer and laptop Windows installation",
-      "Networking and cybersecurity",
-      "Office application installation",
-    ],
-    cta: "Send IT inquiry",
-    href: "/quotation",
-    images: itImages,
-    alt: "OSCOMP IT solution service",
-  },
-];
 
 export default function ServicesPage() {
   return (
@@ -122,11 +31,11 @@ export default function ServicesPage() {
             {services.map((service, index) => (
               <article
                 className={`service-detail${index % 2 === 1 ? " service-detail-reverse" : ""}`}
-                key={service.id}
+                key={service.slug}
               >
                 <div>
                   <ImageCarousel
-                    id={`service-gallery-${service.id}`}
+                    id={`service-gallery-${service.slug}`}
                     images={service.images}
                     alt={service.alt}
                   />
@@ -140,8 +49,11 @@ export default function ServicesPage() {
                       <li key={bullet}>{bullet}</li>
                     ))}
                   </ul>
-                  <Link className="btn btn-primary shadow" href={service.href}>
-                    {service.cta}
+                  <Link
+                    className="btn btn-primary shadow"
+                    href={`/services/${service.slug}`}
+                  >
+                    View service
                   </Link>
                 </div>
               </article>

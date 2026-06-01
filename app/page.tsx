@@ -45,7 +45,8 @@ const securityFeatures = [
       "Plan camera coverage for homes, shops, offices, and business sites with practical placement and setup support.",
     image: "/assets/img/services/cctv-installation/Service-slideshow-03.jpg",
     alt: "CCTV camera installed by OSCOMP",
-    cta: "Send an inquiry"
+    cta: "View service",
+    href: "/services/cctv-sales-and-installation"
   },
   {
     title: "Camera Setup and Maintenance",
@@ -53,7 +54,8 @@ const securityFeatures = [
       "Configure cameras, recorders, storage, mobile viewing, and ongoing troubleshooting for supported CCTV systems.",
     image: "/assets/img/services/cctv-installation/Service-slideshow-08.jpg",
     alt: "Security camera system configured by OSCOMP",
-    cta: "Ask about maintenance"
+    cta: "View service",
+    href: "/services/cctv-sales-and-installation"
   },
   {
     title: "Security Brands and Warranty",
@@ -61,7 +63,8 @@ const securityFeatures = [
       "Install supported brands including Hikvision, Dahua, ACTi, Axis, and TP-Link with warranty support on eligible devices.",
     image: "/assets/img/services/cctv-installation/Service-slideshow-10.jpg",
     alt: "CCTV security equipment prepared for installation",
-    cta: "Send an inquiry"
+    cta: "View service",
+    href: "/services/cctv-sales-and-installation"
   }
 ];
 
@@ -71,14 +74,14 @@ const secondaryServices = [
     description:
       "Hardware diagnostics, Windows installation, and practical device support remain available through OSCOMP services.",
     icon: "computer",
-    href: "/services"
+    href: "/services/electronic-device-and-accessories-repairs"
   },
   {
     title: "IT Solutions",
     description:
       "Networking, cybersecurity, office applications, and business technology support are still offered as secondary services.",
     icon: "settings_ethernet",
-    href: "/services"
+    href: "/services/it-solutions"
   }
 ];
 
@@ -154,7 +157,7 @@ export default function HomePage() {
             {securityFeatures.map((feature) => (
               <Link
                 className="feature-tile-link"
-                href="/quotation"
+                href={feature.href}
                 key={feature.title}
               >
                 <article>

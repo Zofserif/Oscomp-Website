@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
 type ImageCarouselProps = {
   id: string;
   images: string[];
@@ -5,57 +9,29 @@ type ImageCarouselProps = {
 };
 
 export function ImageCarousel({ id, images, alt }: ImageCarouselProps) {
-  const activeImage = images[0];
-  const slideshowScript =
-    images.length > 1
-      ? `
-(() => {
-  const gallery = document.getElementById(${JSON.stringify(id)});
-  if (!gallery || gallery.dataset.slideshowReady === "true") return;
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [manualChangeCount, setManualChangeCount] = useState(0);
+  const safeActiveIndex = images.length > 0 ? activeIndex % images.length : 0;
+  const activeImage = images[safeActiveIndex];
 
-  const images = ${JSON.stringify(images)};
-  const alt = ${JSON.stringify(alt)};
-  const mainImage = gallery.querySelector(".image-gallery-image");
-  const thumbs = Array.from(gallery.querySelectorAll("[data-gallery-index]"));
-  let activeIndex = 0;
-  let slideTimer;
+  useEffect(() => {
+    if (images.length <= 1) return undefined;
 
-  function setActiveImage(nextIndex) {
-    activeIndex = (nextIndex + images.length) % images.length;
-    mainImage.src = images[activeIndex];
-    mainImage.alt = alt + " " + (activeIndex + 1);
-    thumbs.forEach((thumb, index) => {
-      const isActive = index === activeIndex;
-      thumb.classList.toggle("active", isActive);
-      thumb.setAttribute("aria-current", isActive ? "true" : "false");
-    });
+    const slideTimer = window.setInterval(() => {
+      setActiveIndex((current) => (current + 1) % images.length);
+    }, 4000);
+
+    return () => window.clearInterval(slideTimer);
+  }, [images.length, manualChangeCount]);
+
+  if (!activeImage) {
+    return null;
   }
 
-  function restartTimer() {
-    window.clearInterval(slideTimer);
-    slideTimer = window.setInterval(() => setActiveImage(activeIndex + 1), 4000);
+  function setManualImage(nextIndex: number) {
+    setActiveIndex((nextIndex + images.length) % images.length);
+    setManualChangeCount((count) => count + 1);
   }
-
-  gallery.querySelector("[data-gallery-prev]")?.addEventListener("click", () => {
-    setActiveImage(activeIndex - 1);
-    restartTimer();
-  });
-  gallery.querySelector("[data-gallery-next]")?.addEventListener("click", () => {
-    setActiveImage(activeIndex + 1);
-    restartTimer();
-  });
-  thumbs.forEach((thumb, index) => {
-    thumb.addEventListener("click", () => {
-      setActiveImage(index);
-      restartTimer();
-    });
-  });
-
-  gallery.dataset.slideshowReady = "true";
-  restartTimer();
-})();
-`
-      : "";
 
   return (
     <div className="image-gallery" id={id}>
@@ -63,16 +39,24 @@ export function ImageCarousel({ id, images, alt }: ImageCarouselProps) {
         <img
           className="image-gallery-image"
           src={activeImage}
-          alt={`${alt} 1`}
+          alt={`${alt} ${safeActiveIndex + 1}`}
           loading="lazy"
           decoding="async"
         />
         {images.length > 1 ? (
           <div className="image-gallery-controls" aria-label={`${alt} gallery controls`}>
-            <button type="button" data-gallery-prev aria-label="Show previous image">
+            <button
+              type="button"
+              onClick={() => setManualImage(safeActiveIndex - 1)}
+              aria-label="Show previous image"
+            >
               <span aria-hidden="true">‹</span>
             </button>
-            <button type="button" data-gallery-next aria-label="Show next image">
+            <button
+              type="button"
+              onClick={() => setManualImage(safeActiveIndex + 1)}
+              aria-label="Show next image"
+            >
               <span aria-hidden="true">›</span>
             </button>
           </div>
@@ -82,20 +66,17 @@ export function ImageCarousel({ id, images, alt }: ImageCarouselProps) {
         <div className="image-gallery-strip" aria-label={`${alt} thumbnails`}>
           {images.map((image, index) => (
             <button
-              className={index === 0 ? "active" : ""}
+              className={index === safeActiveIndex ? "active" : ""}
               key={image}
               type="button"
-              data-gallery-index={index}
+              onClick={() => setManualImage(index)}
               aria-label={`Show image ${index + 1}`}
-              aria-current={index === 0 ? "true" : "false"}
+              aria-current={index === safeActiveIndex ? "true" : "false"}
             >
               <img src={image} alt="" loading="lazy" decoding="async" />
             </button>
           ))}
         </div>
-      ) : null}
-      {slideshowScript ? (
-        <script dangerouslySetInnerHTML={{ __html: slideshowScript }} />
       ) : null}
     </div>
   );

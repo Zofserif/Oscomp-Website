@@ -98,11 +98,11 @@ function validateField(name: keyof FormData, value: string): string {
     case "name":
       return !v ? "Name is required" : "";
     case "phone":
-      if (!v) return "Phone is required";
+      if (!v) return "";
       if (v.length < 6) return "Enter a valid phone number";
       return "";
     case "email":
-      if (!v) return "Email is required";
+      if (!v) return "";
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return "Enter a valid email";
       return "";
     case "service":
@@ -120,7 +120,6 @@ function validateField(name: keyof FormData, value: string): string {
 
 function buildMessage(data: FormData): string {
   const parts: string[] = [];
-  if (data.propertyType) parts.push(`Property: ${data.propertyType}`);
   if (data.message.trim()) parts.push(`Notes: ${data.message.trim()}`);
   return parts.join("\n") || "No additional details provided.";
 }
@@ -153,6 +152,10 @@ export function QuotationForm() {
           if (!err) {
             const next = { ...prev };
             delete next[name];
+            if (name === "phone" || name === "email") {
+              delete next.phone;
+              delete next.email;
+            }
             return next;
           }
           return { ...prev, [name]: err };
@@ -198,6 +201,10 @@ export function QuotationForm() {
         valid = false;
       }
     }
+    if (s === 1 && !data.phone.trim() && !data.email.trim()) {
+      newErrors.phone = "Enter either a phone number or email address";
+      valid = false;
+    }
     setErrors((prev) => ({ ...prev, ...newErrors }));
     // mark all step fields as touched
     setTouched((prev) => {
@@ -233,6 +240,7 @@ export function QuotationForm() {
       email: data.email.trim(),
       service: data.service,
       location: data.location.trim(),
+      propertyType: data.propertyType,
       message: buildMessage(data),
     };
 
@@ -345,12 +353,11 @@ export function QuotationForm() {
               )}
             </label>
             <label className={fieldClass("phone")}>
-              <span>Phone number *</span>
+              <span>Phone number</span>
               <input
                 name="phone"
                 type="tel"
                 autoComplete="tel"
-                required
                 minLength={6}
                 maxLength={30}
                 placeholder="e.g. 0912 345 6789"
@@ -364,12 +371,11 @@ export function QuotationForm() {
             </label>
           </div>
           <label className={fieldClass("email")}>
-            <span>Email address *</span>
+            <span>Email address</span>
             <input
               name="email"
               type="email"
               autoComplete="email"
-              required
               maxLength={100}
               placeholder="you@example.com"
               value={data.email}

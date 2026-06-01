@@ -5,7 +5,9 @@ type QuotationRequest = {
   phone?: unknown;
   email?: unknown;
   service?: unknown;
+  category?: unknown;
   location?: unknown;
+  propertyType?: unknown;
   message?: unknown;
 };
 
@@ -14,7 +16,9 @@ const fieldLimits = {
   phone: 30,
   email: 100,
   service: 80,
+  category: 80,
   location: 140,
+  propertyType: 40,
   message: 1000
 };
 
@@ -40,11 +44,20 @@ export async function POST(request: Request) {
     phone: cleanField(body.phone, fieldLimits.phone),
     email: cleanField(body.email, fieldLimits.email),
     service: cleanField(body.service, fieldLimits.service),
+    category: cleanField(body.category, fieldLimits.category),
     location: cleanField(body.location, fieldLimits.location),
+    propertyType: cleanField(body.propertyType, fieldLimits.propertyType),
     message: cleanField(body.message, fieldLimits.message)
   };
 
-  const missingField = Object.entries(quotation).find(([, value]) => !value);
+  const category = quotation.category || quotation.service;
+  const requiredFields = {
+    name: quotation.name,
+    service: category,
+    location: quotation.location,
+    message: quotation.message
+  };
+  const missingField = Object.entries(requiredFields).find(([, value]) => !value);
 
   if (missingField) {
     return NextResponse.json(
@@ -53,7 +66,14 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!isValidEmail(quotation.email)) {
+  if (!quotation.phone && !quotation.email) {
+    return NextResponse.json(
+      { error: "Please provide either a phone number or email address." },
+      { status: 400 }
+    );
+  }
+
+  if (quotation.email && !isValidEmail(quotation.email)) {
     return NextResponse.json(
       { error: "Please provide a valid email address." },
       { status: 400 }
@@ -76,10 +96,12 @@ export async function POST(request: Request) {
     "New OSCOMP inquiry",
     "",
     `Name: ${quotation.name}`,
-    `Phone: ${quotation.phone}`,
-    `Email: ${quotation.email}`,
-    `Service: ${quotation.service}`,
+    `Phone: ${quotation.phone || "Not provided"}`,
+    `Email: ${quotation.email || "Not provided"}`,
+    `Category: ${category}`,
+    `Service: ${quotation.service || category}`,
     `Location: ${quotation.location}`,
+    `Property type: ${quotation.propertyType || "Not provided"}`,
     "",
     "Project details:",
     quotation.message
@@ -92,7 +114,7 @@ export async function POST(request: Request) {
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
         Priority: "4",
         Tags: "camera,shield",
-        Title: "OSCOMP inquiry"
+        Title: `OSCOMP inquiry - ${category}`
       },
       body: message
     });

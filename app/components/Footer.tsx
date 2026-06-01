@@ -10,13 +10,17 @@ export function Footer() {
             <h2 className="fs-6 fw-bold">Services</h2>
             <ul className="list-unstyled">
               <li>
-                <Link href="/services">CCTV Sales &amp; Installation</Link>
+                <Link href="/services/cctv-sales-and-installation">
+                  CCTV Sales &amp; Installation
+                </Link>
               </li>
               <li>
-                <Link href="/services">Computer Repairs</Link>
+                <Link href="/services/electronic-device-and-accessories-repairs">
+                  Computer Repairs
+                </Link>
               </li>
               <li>
-                <Link href="/services">IT Solutions</Link>
+                <Link href="/services/it-solutions">IT Solutions</Link>
               </li>
             </ul>
           </div>
