@@ -113,18 +113,27 @@ export const projects: CompletedProject[] = [
       "OSCOMP installed a home entrance security system with intercom functionality, integrating automated entrance controls to enhance the security and convenience of the residential property.",
     media: projectImages(
       [
-        "/assets/img/services/cctv-installation/Service-slideshow-01.jpg",
-        "/assets/img/services/cctv-installation/Service-slideshow-03.jpg",
-        "/assets/img/services/cctv-installation/Service-slideshow-08.jpg",
-        "/assets/img/services/cctv-installation/Service-slideshow-09.jpg",
-        "/assets/img/services/cctv-installation/Service-slideshow-14.jpg",
+        "/assets/img/projects/home intercom/RFID Door entrance.jpg",
+        "/assets/img/projects/home intercom/Door RFID Door.jpg",
       ],
       "OSCOMP home entrance and intercom system project",
-    ).concat({
-      type: "youtube-video",
-      url: "https://youtu.be/kUbbgCumSys",
-      title: "Home entrance Automatic gate system",
-    }),
+    ).concat(
+      {
+        type: "youtube-video",
+        url: "https://youtu.be/kUbbgCumSys",
+        title: "Home entrance Automatic gate system",
+      },
+      {
+        type: "youtube-video",
+        url: "https://youtu.be/Q_mJr6lJKQA",
+        title: "Home Electric Fence Installation",
+      },
+      {
+        type: "youtube-video",
+        url: "https://youtu.be/iiakBHKYIJc",
+        title: "Automatic Home Entrance Gate system",
+      },
+    ),
     tags: ["Home Security", "Intercom", "Gate Automation", "CALABARZON"],
     alt: "OSCOMP home entrance and intercom system project",
   },
