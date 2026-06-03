@@ -7,35 +7,35 @@ export const metadata: Metadata = metadataFor({
   title: "CCTV Installation & Security Camera Services",
   description:
     "OSCOMP provides CCTV sales, security camera installation, maintenance, and support for homes and businesses across CALABARZON.",
-  path: "/"
+  path: "/",
 });
 
 const brandLinks = [
   {
     href: "https://www.hikvision.com/ph/",
     src: "/assets/img/brands/HIKVISION.png",
-    alt: "Hikvision CCTV brand"
+    alt: "Hikvision CCTV brand",
   },
   {
     href: "https://us.dahuasecurity.com/",
     src: "/assets/img/brands/Dahua_Technology_logo.png",
-    alt: "Dahua Technology CCTV brand"
+    alt: "Dahua Technology CCTV brand",
   },
   {
     href: "https://www.acti.com/",
     src: "/assets/img/brands/acti.png",
-    alt: "ACTi CCTV brand"
+    alt: "ACTi CCTV brand",
   },
   {
     href: "https://www.axis.com/en-ph",
     src: "/assets/img/brands/Axis_Communications_logo.png",
-    alt: "Axis Communications CCTV brand"
+    alt: "Axis Communications CCTV brand",
   },
   {
     href: "https://www.tp-link.com/ph/home-networking/cloud-camera/",
     src: "/assets/img/brands/TPLINK_Logo_2.png",
-    alt: "TP-Link CCTV brand"
-  }
+    alt: "TP-Link CCTV brand",
+  },
 ];
 
 const securityFeatures = [
@@ -46,7 +46,7 @@ const securityFeatures = [
     image: "/assets/img/services/cctv-installation/Service-slideshow-03.jpg",
     alt: "CCTV camera installed by OSCOMP",
     cta: "View service",
-    href: "/services/cctv-sales-and-installation"
+    href: "/services/cctv-consultation-and-installation",
   },
   {
     title: "Camera Setup and Maintenance",
@@ -55,7 +55,7 @@ const securityFeatures = [
     image: "/assets/img/services/cctv-installation/Service-slideshow-08.jpg",
     alt: "Security camera system configured by OSCOMP",
     cta: "View service",
-    href: "/services/cctv-sales-and-installation"
+    href: "/services/cctv-consultation-and-installation",
   },
   {
     title: "Security Brands and Warranty",
@@ -64,8 +64,8 @@ const securityFeatures = [
     image: "/assets/img/services/cctv-installation/Service-slideshow-10.jpg",
     alt: "CCTV security equipment prepared for installation",
     cta: "View service",
-    href: "/services/cctv-sales-and-installation"
-  }
+    href: "/services/cctv-consultation-and-installation",
+  },
 ];
 
 const secondaryServices = [
@@ -74,21 +74,21 @@ const secondaryServices = [
     description:
       "Hardware diagnostics, Windows installation, and practical device support remain available through OSCOMP services.",
     icon: "computer",
-    href: "/services/electronic-device-and-accessories-repairs"
+    href: "/services/electronic-device-and-accessories-repairs",
   },
   {
     title: "IT Solutions",
     description:
       "Networking, cybersecurity, office applications, and business technology support are still offered as secondary services.",
     icon: "settings_ethernet",
-    href: "/services/it-solutions"
-  }
+    href: "/services/it-solutions",
+  },
 ];
 
 const highlights = [
   "CCTV installation and security camera support across CALABARZON",
   "Supported brands include Hikvision, Dahua, ACTi, Axis, and TP-Link",
-  "Free 1-year warranty on supported CCTV devices"
+  "Free 1-year warranty on supported CCTV devices",
 ];
 
 export default function HomePage() {
@@ -208,7 +208,10 @@ export default function HomePage() {
           <div className="service-grid service-grid-secondary">
             {secondaryServices.map((service) => (
               <article className="service-card" key={service.title}>
-                <span className="service-icon material-icons" aria-hidden="true">
+                <span
+                  className="service-icon material-icons"
+                  aria-hidden="true"
+                >
                   {service.icon}
                 </span>
                 <h3>{service.title}</h3>
