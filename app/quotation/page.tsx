@@ -3,9 +3,9 @@ import { QuotationForm } from "../components/QuotationForm";
 import { metadataFor } from "../lib/site";
 
 export const metadata: Metadata = metadataFor({
-  title: "Send an Inquiry",
+  title: "Inquiry",
   description:
-    "Send OSCOMP an inquiry for CCTV installation, security camera maintenance, computer repair, networking, cybersecurity, and IT solution services.",
+    "Send OSCOMP an inquiry for CCTV installation, security camera setup, computer repair, networking, cybersecurity, and IT solution services.",
   path: "/quotation"
 });
 

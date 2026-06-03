@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LandingContact } from "./components/LandingContact";
-import { metadataFor } from "./lib/site";
+import { breadcrumbJsonLd, metadataFor } from "./lib/site";
 
 export const metadata: Metadata = metadataFor({
-  title: "CCTV Installation & Security Camera Services",
+  title: "OSCOMP - CCTV and IT Solutions",
   description:
-    "OSCOMP provides CCTV sales, security camera installation, maintenance, and support for homes and businesses across CALABARZON.",
+    "OSCOMP provides CCTV installation, security camera setup, networking, cybersecurity, computer repair, and practical IT solutions for homes and businesses.",
   path: "/",
 });
 
@@ -91,9 +91,57 @@ const highlights = [
   "Free 1-year warranty on supported CCTV devices",
 ];
 
+const faqs = [
+  {
+    question: "How much does CCTV installation cost?",
+    answer:
+      "CCTV installation cost depends on the number of cameras, recorder or storage needs, cable routing, property layout, and whether the site needs remote mobile viewing or extra troubleshooting support."
+  },
+  {
+    question: "Do you install CCTV systems in Candelaria, Quezon?",
+    answer:
+      "Yes. OSCOMP provides CCTV installation in Candelaria, Quezon and supports nearby homes and businesses across CALABARZON."
+  },
+  {
+    question: "Can OSCOMP set up mobile viewing for security cameras?",
+    answer:
+      "Yes. OSCOMP can configure supported CCTV systems for mobile viewing, recorder setup, storage, camera placement, and practical post-installation support."
+  },
+  {
+    question: "Which CCTV brands do you support?",
+    answer:
+      "OSCOMP works with supported CCTV and security camera brands including Hikvision, Dahua, ACTi, Axis, and TP-Link."
+  },
+  {
+    question: "Do you also provide IT solutions in Quezon?",
+    answer:
+      "Yes. OSCOMP provides IT solutions in Quezon, including network setup, cybersecurity support, office application setup, computer repair, and ongoing technology assistance."
+  }
+];
+
 export default function HomePage() {
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer
+      }
+    }))
+  };
+  const breadcrumbJsonLdData = breadcrumbJsonLd([{ name: "Home", path: "/" }]);
+
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([faqJsonLd, breadcrumbJsonLdData])
+        }}
+      />
       <header className="site-hero">
         <div className="container">
           <div className="hero-grid">
@@ -101,9 +149,9 @@ export default function HomePage() {
               <p className="eyebrow">CCTV installer in CALABARZON</p>
               <h1>CCTV Installation and Security Camera Support</h1>
               <p className="hero-lead">
-                OSCOMP helps homes and businesses secure their property with
-                CCTV sales, installation, camera setup, maintenance, and
-                troubleshooting support.
+                OSCOMP helps homes and businesses in Candelaria, Quezon and
+                CALABARZON secure their property with CCTV sales, installation,
+                camera setup, maintenance, and troubleshooting support.
               </p>
               <div className="hero-actions">
                 <Link
@@ -149,8 +197,8 @@ export default function HomePage() {
             <p className="eyebrow">Featured services</p>
             <h2>Security camera service from planning to support</h2>
             <p>
-              Build a CCTV setup around your site, coverage needs, equipment,
-              and maintenance requirements.
+              Build a CCTV installation in Candelaria, Quezon around your site,
+              coverage needs, equipment, and maintenance requirements.
             </p>
           </div>
           <div className="feature-strip">
@@ -201,8 +249,9 @@ export default function HomePage() {
             <p className="eyebrow">Also available</p>
             <h2>Other OSCOMP services</h2>
             <p>
-              Computer repair and IT support are still offered, while this page
-              currently focuses on CCTV and security installation.
+              Computer repair, network setup, cybersecurity support, and IT
+              solutions in Quezon are still offered, while this page currently
+              focuses on CCTV and security installation.
             </p>
           </div>
           <div className="service-grid service-grid-secondary">
@@ -220,6 +269,27 @@ export default function HomePage() {
                   Learn more
                 </Link>
               </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section-pad">
+        <div className="container">
+          <div className="section-heading">
+            <p className="eyebrow">Common questions</p>
+            <h2>CCTV installation and IT support FAQ</h2>
+            <p>
+              Practical answers for homeowners and businesses planning security
+              camera setup, network support, or IT solutions in Quezon.
+            </p>
+          </div>
+          <div className="faq-list">
+            {faqs.map((faq) => (
+              <details className="faq-item" key={faq.question}>
+                <summary>{faq.question}</summary>
+                <p>{faq.answer}</p>
+              </details>
             ))}
           </div>
         </div>

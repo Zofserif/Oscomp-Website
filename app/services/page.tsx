@@ -11,7 +11,7 @@ export const revalidate = 300;
 export const metadata: Metadata = metadataFor({
   title: "Services",
   description:
-    "Explore OSCOMP services including CCTV sales and installation, electronic device repair, computer repair, networking, cybersecurity, and IT support.",
+    "Explore OSCOMP services for CCTV installation, security camera setup, computer repair, networking, cybersecurity, and practical IT solutions.",
   path: "/services",
 });
 

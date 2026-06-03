@@ -25,10 +25,38 @@ export function LocalBusinessJsonLd() {
     },
     areaServed: ["Candelaria", "Quezon", "CALABARZON"],
     makesOffer: [
-      "CCTV sales and installation",
-      "Computer repair",
-      "IT solutions",
-      "Networking and cybersecurity"
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "CCTV installation",
+          areaServed: ["Candelaria", "Quezon", "CALABARZON"]
+        }
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Security camera setup",
+          areaServed: ["Candelaria", "Quezon", "CALABARZON"]
+        }
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "IT solutions",
+          areaServed: ["Candelaria", "Quezon", "CALABARZON"]
+        }
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Computer repair",
+          areaServed: ["Candelaria", "Quezon", "CALABARZON"]
+        }
+      }
     ],
     sameAs: [site.mapUrl]
   };

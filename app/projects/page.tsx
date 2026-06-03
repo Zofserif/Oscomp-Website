@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ProjectGallery } from "../components/ProjectGallery";
 import { getProjectImages, getProjects } from "../lib/projects";
-import { metadataFor, site, siteUrl } from "../lib/site";
+import { breadcrumbJsonLd, metadataFor, site, siteUrl } from "../lib/site";
 
 export const metadata: Metadata = metadataFor({
-  title: "Completed CCTV, Computer Repair & IT Projects",
+  title: "Projects",
   description:
-    "See OSCOMP completed work across CCTV installation, security camera support, computer repair, networking, and IT solutions in CALABARZON.",
+    "See OSCOMP completed projects for CCTV installation, security camera support, computer repair, networking, and IT solutions.",
   path: "/projects"
 });
 
@@ -58,12 +58,18 @@ export default async function ProjectsPage() {
       }
     }))
   };
+  const breadcrumbJsonLdData = breadcrumbJsonLd([
+    { name: "Home", path: "/" },
+    { name: "Projects", path: "/projects" }
+  ]);
 
   return (
     <main>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(projectsJsonLd) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([projectsJsonLd, breadcrumbJsonLdData])
+        }}
       />
       <section className="page-hero">
         <div className="container">

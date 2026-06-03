@@ -9,10 +9,10 @@ const rawSiteUrl =
 export const siteUrl = rawSiteUrl.replace(/\/$/, "");
 
 export const site = {
-  name: "OSCOMP IT Solution",
+  name: "OSCOMP - CCTV and IT Solutions",
   shortName: "OSCOMP",
   description:
-    "OSCOMP provides CCTV sales, security camera installation, maintenance, and support across CALABARZON from Candelaria, Quezon.",
+    "OSCOMP provides CCTV installation, security camera setup, networking, cybersecurity, computer repair, and practical IT solutions for homes and businesses.",
   keywords: [
     "OSCOMP",
     "CALABARZON CCTV",
@@ -43,6 +43,32 @@ export const routes = [
   { path: "/projects", label: "Projects", priority: 0.6 },
   { path: "/contact", label: "Contact", priority: 0.8 }
 ];
+
+export type BreadcrumbItem = {
+  name: string;
+  path: string;
+};
+
+export function absoluteUrl(path: string) {
+  if (path.startsWith("http://") || path.startsWith("https://")) {
+    return path;
+  }
+
+  return `${siteUrl}${path === "/" ? "" : path}`;
+}
+
+export function breadcrumbJsonLd(items: BreadcrumbItem[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      item: absoluteUrl(item.path)
+    }))
+  };
+}
 
 type MetadataInput = {
   title: string;
@@ -75,7 +101,7 @@ export function metadataFor({
           url: site.ogImage,
           width: 1200,
           height: 630,
-          alt: "OSCOMP IT Solution services in CALABARZON"
+          alt: "OSCOMP CCTV and IT solutions"
         }
       ]
     },

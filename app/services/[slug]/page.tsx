@@ -5,7 +5,13 @@ import { ImageCarousel } from "../../components/ImageCarousel";
 import { ServiceInquiryModal } from "../../components/ServiceInquiryModal";
 import { getServiceMedia } from "../../lib/service-media";
 import { getServiceBySlug, services } from "../../lib/services";
-import { metadataFor } from "../../lib/site";
+import {
+  absoluteUrl,
+  breadcrumbJsonLd,
+  metadataFor,
+  site,
+  siteUrl
+} from "../../lib/site";
 
 export const revalidate = 300;
 
@@ -51,9 +57,47 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
   }
 
   const media = await getServiceMedia(service);
+  const serviceUrl = `/services/${service.slug}`;
+  const jsonLd = [
+    breadcrumbJsonLd([
+      { name: "Home", path: "/" },
+      { name: "Services", path: "/services" },
+      { name: service.title, path: serviceUrl }
+    ]),
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      name: service.title,
+      description: service.seoDescription,
+      serviceType: service.category,
+      url: absoluteUrl(serviceUrl),
+      image: media
+        .filter((mediaItem) => mediaItem.type === "image")
+        .slice(0, 5)
+        .map((mediaItem) => absoluteUrl(mediaItem.src)),
+      areaServed: ["Candelaria", "Quezon", "CALABARZON"],
+      provider: {
+        "@type": "LocalBusiness",
+        name: site.name,
+        url: siteUrl,
+        telephone: site.phoneGlobe,
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: "VSJ",
+          addressLocality: "Candelaria",
+          addressRegion: "Quezon",
+          addressCountry: "PH"
+        }
+      }
+    }
+  ];
 
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <section className="page-hero service-page-hero">
         <div className="container">
           <Link className="service-back-link" href="/services">

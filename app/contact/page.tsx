@@ -26,7 +26,7 @@ const contactItems = [
 export const metadata: Metadata = metadataFor({
   title: "Contact",
   description:
-    "Contact OSCOMP for CCTV installation, computer repair, electronic repair, networking, cybersecurity, and IT solution inquiries in Candelaria, Quezon.",
+    "Contact OSCOMP for CCTV installation, security camera setup, computer repair, networking, cybersecurity, and IT solution inquiries.",
   path: "/contact"
 });
 
