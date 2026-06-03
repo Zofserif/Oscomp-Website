@@ -23,6 +23,30 @@ const itImages = Array.from(
     )}.jpg`,
 );
 
+const websiteImages = Array.from(
+  { length: 6 },
+  (_, index) =>
+    `/assets/img/services/marketing-website-solution/Website-Solution-${String(
+      index + 1,
+    ).padStart(2, "0")}.jpg`,
+);
+
+const softwareImages = Array.from(
+  { length: 6 },
+  (_, index) =>
+    `/assets/img/services/custom-software-solution/Software-Solution-${String(
+      index + 1,
+    ).padStart(2, "0")}.jpg`,
+);
+
+function serviceFallbackMedia(images: string[], alt: string): ServiceMedia[] {
+  return images.map((src, index) => ({
+    type: "image",
+    src,
+    alt: `${alt} ${index + 1}`,
+  }));
+}
+
 export type Service = {
   slug: string;
   eyebrow: string;
@@ -33,17 +57,25 @@ export type Service = {
   bullets: string[];
   detailBullets: string[];
   cta: string;
-  images: string[];
+  mediaFolder: string;
+  fallbackMedia: ServiceMedia[];
   alt: string;
   seoDescription: string;
 };
 
+export type ServiceMedia = {
+  type: "image" | "video";
+  src: string;
+  alt?: string;
+  title?: string;
+};
+
 export const services: Service[] = [
   {
-    slug: "cctv-sales-and-installation",
+    slug: "cctv-consultation-and-installation",
     eyebrow: "Security systems",
-    title: "CCTV Sales and Installation",
-    category: "CCTV Sales and Installation",
+    title: "CCTV Consultation and Installation",
+    category: "CCTV Consultation and Installation",
     description:
       "OSCOMP installs and configures CCTV systems for homes and businesses with supported brands such as HIKVISION, Dahua, ACTi, Axis, and TP-Link. CCTV device support includes a free 1-year warranty and troubleshooting support.",
     detailDescription:
@@ -60,11 +92,47 @@ export const services: Service[] = [
       "Troubleshooting support after installation",
     ],
     cta: "Inquire Now",
-    images: cctvImages,
+    mediaFolder: "services/cctv-sales-and-installation",
+    fallbackMedia: serviceFallbackMedia(
+      cctvImages,
+      "OSCOMP CCTV installation work",
+    ),
     alt: "OSCOMP CCTV installation work",
     seoDescription:
       "Inquire about OSCOMP CCTV sales and installation for homes and businesses in CALABARZON.",
   },
+
+  {
+    slug: "security-system-repair-and-maintenance",
+    eyebrow: "Security Support",
+    title: "Security System Repair and Maintenance",
+    category: "Security System Repair and Maintenance",
+    description:
+      "OSCOMP provides repair and maintenance services for security systems, including CCTV troubleshooting, device repairs, and system maintenance to ensure optimal performance and security for homes and businesses.",
+    detailDescription:
+      "For your security system support needs, OSCOMP offers repair and maintenance services for CCTV systems, including troubleshooting, device repairs, and system maintenance to ensure optimal performance and security for homes and businesses across CALABARZON.",
+    bullets: [
+      "CCTV system Layout and Planning",
+      "Business and Home security consultation",
+      "Security Design and planning",
+    ],
+    detailBullets: [
+      "Site-based camera placement recommendations",
+      "Home and Business security consultation and solution planning",
+      "Package design and planning for CCTV systems",
+      "Alarm system layout and planning",
+    ],
+    cta: "Inquire Now",
+    mediaFolder: "services/security-system-repair-and-maintenance",
+    fallbackMedia: serviceFallbackMedia(
+      cctvImages,
+      "OSCOMP CCTV installation work",
+    ),
+    alt: "OSCOMP CCTV installation work",
+    seoDescription:
+      "OSCOMP Security and CCTV consultation and solution planning for homes and businesses in CALABARZON.",
+  },
+
   {
     slug: "attendance-and-access-control",
     eyebrow: "Overall security",
@@ -86,7 +154,11 @@ export const services: Service[] = [
       "Support for business and organization security workflows",
     ],
     cta: "Inquire Now",
-    images: repairImages,
+    mediaFolder: "services/attendance-and-access-control",
+    fallbackMedia: serviceFallbackMedia(
+      repairImages,
+      "OSCOMP attendance and access control system installation work",
+    ),
     alt: "OSCOMP attendance and access control system installation work",
     seoDescription:
       "Inquire about OSCOMP attendance, biometrics, and access control solutions for business sites.",
@@ -112,7 +184,11 @@ export const services: Service[] = [
       "Landline and accessory repair assistance",
     ],
     cta: "Inquire Now",
-    images: repairImages,
+    mediaFolder: "services/electronic-device-and-accessories-repairs",
+    fallbackMedia: serviceFallbackMedia(
+      repairImages,
+      "OSCOMP computer and electronic repair work",
+    ),
     alt: "OSCOMP computer and electronic repair work",
     seoDescription:
       "Inquire about OSCOMP computer, laptop, landline, and electronic device repair services.",
@@ -138,10 +214,73 @@ export const services: Service[] = [
       "Computer setup and ongoing IT support",
     ],
     cta: "Inquire Now",
-    images: itImages,
+    mediaFolder: "services/it-solutions",
+    fallbackMedia: serviceFallbackMedia(itImages, "OSCOMP IT solution service"),
     alt: "OSCOMP IT solution service",
     seoDescription:
       "Inquire about OSCOMP IT solutions, networking, cybersecurity, and computer setup support.",
+  },
+  {
+    slug: "marketing-website-solution",
+    eyebrow: "Web presence",
+    title: "Marketing Website Solution",
+    category: "Marketing Website Solution",
+    description:
+      "OSCOMP designs and builds marketing websites that help businesses establish a professional online presence, attract customers, and showcase their products or services effectively.",
+    detailDescription:
+      "Get a tailored marketing website built for your business — from landing pages to multi-page sites with modern design, mobile responsiveness, and SEO best practices to help you reach more customers online.",
+    bullets: [
+      "Business and company websites",
+      "Landing pages and product showcases",
+      "Mobile-responsive design",
+    ],
+    detailBullets: [
+      "Custom website design aligned with your brand",
+      "SEO-optimized content and structure",
+      "Mobile and tablet responsive layouts",
+      "Domain and hosting setup assistance",
+      "Post-launch support and maintenance",
+    ],
+    cta: "Inquire Now",
+    mediaFolder: "services/marketing-website-solution",
+    fallbackMedia: serviceFallbackMedia(
+      websiteImages,
+      "OSCOMP marketing website solution work",
+    ),
+    alt: "OSCOMP marketing website solution work",
+    seoDescription:
+      "Inquire about OSCOMP marketing website design and development for businesses in CALABARZON.",
+  },
+  {
+    slug: "custom-software-solution",
+    eyebrow: "Tailored technology",
+    title: "Custom Software Solution",
+    category: "Custom Software Solution",
+    description:
+      "OSCOMP develops custom software solutions to streamline business operations, automate workflows, and solve unique challenges that off-the-shelf software cannot address.",
+    detailDescription:
+      "From internal tools and inventory systems to booking platforms and business automation, OSCOMP builds software tailored to how your business actually works — saving time and reducing manual effort.",
+    bullets: [
+      "Business process automation",
+      "Inventory and management systems",
+      "Booking and scheduling platforms",
+    ],
+    detailBullets: [
+      "Requirements analysis and solution design",
+      "Custom web and desktop application development",
+      "Database design and data management",
+      "System integration with existing tools",
+      "Training, documentation, and ongoing support",
+    ],
+    cta: "Inquire Now",
+    mediaFolder: "services/custom-software-solution",
+    fallbackMedia: serviceFallbackMedia(
+      softwareImages,
+      "OSCOMP custom software solution work",
+    ),
+    alt: "OSCOMP custom software solution work",
+    seoDescription:
+      "Inquire about OSCOMP custom software development and business automation solutions in CALABARZON.",
   },
 ];
 

@@ -1,8 +1,16 @@
+import { getStorageMedia } from "./storage-media";
+
 export type ProjectMedia =
   | {
       type: "image";
       src: string;
       alt: string;
+    }
+  | {
+      type: "video";
+      src: string;
+      title: string;
+      poster?: string;
     }
   | {
       type: "youtube-video";
@@ -25,6 +33,12 @@ export type CompletedProject = {
   alt: string;
 };
 
+type ProjectData = Omit<CompletedProject, "media"> & {
+  mediaFolder: string;
+  fallbackMedia: ProjectMedia[];
+  youtubeMedia?: Extract<ProjectMedia, { type: "youtube-video" }>[];
+};
+
 function projectImages(images: string[], alt: string): ProjectMedia[] {
   return images.map((src, index) => ({
     type: "image",
@@ -42,6 +56,7 @@ export function getProjectThumbnail(
 ): ProjectMedia | undefined {
   return (
     getProjectImages(project)[0] ??
+    project.media.find((item) => item.type === "video") ??
     project.media.find((item) => item.type === "youtube-video")
   );
 }
@@ -81,7 +96,7 @@ export function getYoutubeEmbedSrc(url: string) {
   const videoId = getYoutubeVideoId(url);
 
   return videoId
-    ? `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`
+    ? `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&playsinline=1&rel=0&modestbranding=1&enablejsapi=1`
     : null;
 }
 
@@ -99,7 +114,7 @@ export function getYoutubePosterSrc(media: ProjectMedia) {
   return videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : null;
 }
 
-export const projects: CompletedProject[] = [
+const projectData: ProjectData[] = [
   {
     slug: "home-entrance-intercom",
     title: "Home Entrance and Intercom System",
@@ -111,13 +126,15 @@ export const projects: CompletedProject[] = [
       "Home entrance security system installation, including intercom setup and automated entrance integration for a residential property in CALABARZON.",
     summary:
       "OSCOMP installed a home entrance security system with intercom functionality, integrating automated entrance controls to enhance the security and convenience of the residential property.",
-    media: projectImages(
+    mediaFolder: "projects/home-entrance-intercom",
+    fallbackMedia: projectImages(
       [
         "/assets/img/projects/home intercom/RFID Door entrance.jpg",
         "/assets/img/projects/home intercom/Door RFID Door.jpg",
       ],
       "OSCOMP home entrance and intercom system project",
-    ).concat(
+    ),
+    youtubeMedia: [
       {
         type: "youtube-video",
         url: "https://youtu.be/kUbbgCumSys",
@@ -133,7 +150,7 @@ export const projects: CompletedProject[] = [
         url: "https://youtu.be/iiakBHKYIJc",
         title: "Automatic Home Entrance Gate system",
       },
-    ),
+    ],
     tags: ["Home Security", "Intercom", "Gate Automation", "CALABARZON"],
     alt: "OSCOMP home entrance and intercom system project",
   },
@@ -148,7 +165,8 @@ export const projects: CompletedProject[] = [
       "Security camera planning, installation, recorder setup, and mobile viewing support for a property in CALABARZON.",
     summary:
       "OSCOMP planned camera coverage, installed CCTV equipment, configured recording storage, and prepared the client for day-to-day monitoring and troubleshooting support.",
-    media: projectImages(
+    mediaFolder: "projects/cctv-security-camera-installation-calabarzon",
+    fallbackMedia: projectImages(
       [
         "/assets/img/services/cctv-installation/Service-slideshow-01.jpg",
         "/assets/img/services/cctv-installation/Service-slideshow-03.jpg",
@@ -172,7 +190,8 @@ export const projects: CompletedProject[] = [
       "Camera adjustment, system checking, and setup support for a CCTV installation that needed reliable monitoring.",
     summary:
       "The work focused on checking camera positioning, reviewing system configuration, and helping the client keep the CCTV setup usable for regular security monitoring.",
-    media: projectImages(
+    mediaFolder: "projects/cctv-maintenance-and-camera-setup",
+    fallbackMedia: projectImages(
       [
         "/assets/img/services/cctv-installation/Service-slideshow-02.jpg",
         "/assets/img/services/cctv-installation/Service-slideshow-04.jpg",
@@ -195,7 +214,8 @@ export const projects: CompletedProject[] = [
       "Device diagnostics, Windows support, and practical repair work for computers and laptops used in daily operations.",
     summary:
       "OSCOMP handled practical device support including diagnostics, Windows installation help, setup checks, and repair guidance for client equipment.",
-    media: projectImages(
+    mediaFolder: "projects/computer-laptop-repair-and-windows-support",
+    fallbackMedia: projectImages(
       [
         "/assets/img/services/computer-repair/Computer-repair-01.jpg",
         "/assets/img/services/computer-repair/Computer-repair-02.jpg",
@@ -218,7 +238,8 @@ export const projects: CompletedProject[] = [
       "Business technology support for networking, cybersecurity, office applications, and workstation setup needs.",
     summary:
       "OSCOMP supported practical IT requirements for business operations, including network-related checks, office application support, and workstation setup guidance.",
-    media: projectImages(
+    mediaFolder: "projects/networking-it-solutions-office-support",
+    fallbackMedia: projectImages(
       [
         "/assets/img/services/it-solution/IT-Solution-01.jpg",
         "/assets/img/services/it-solution/IT-Solution-02.jpg",
@@ -232,11 +253,78 @@ export const projects: CompletedProject[] = [
   },
 ];
 
-export const sortedProjects = [...projects].sort(
-  (left, right) =>
-    new Date(right.completedAt).getTime() -
-    new Date(left.completedAt).getTime(),
+function sortProjects(projects: CompletedProject[]) {
+  return [...projects].sort(
+    (left, right) =>
+      new Date(right.completedAt).getTime() -
+      new Date(left.completedAt).getTime(),
+  );
+}
+
+function storageMediaForProject(
+  project: ProjectData,
+  media: Awaited<ReturnType<typeof getStorageMedia>>,
+): ProjectMedia[] {
+  return media.map((mediaItem, index): ProjectMedia => {
+    if (mediaItem.type === "image") {
+      return {
+        type: "image",
+        src: mediaItem.src,
+        alt: `${project.alt} ${index + 1}`,
+      };
+    }
+
+    return {
+      type: "video",
+      src: mediaItem.src,
+      title: mediaItem.title || `${project.title} video ${index + 1}`,
+    };
+  });
+}
+
+export async function getProjects() {
+  const projects = await Promise.all(
+    projectData.map(async (project): Promise<CompletedProject> => {
+      const storageMedia = storageMediaForProject(
+        project,
+        await getStorageMedia(project.mediaFolder),
+      );
+      const media = [
+        ...(storageMedia.length > 0 ? storageMedia : project.fallbackMedia),
+        ...(project.youtubeMedia ?? []),
+      ];
+      const projectDetails = getProjectDetails(project);
+
+      return {
+        ...projectDetails,
+        media,
+      };
+    }),
+  );
+
+  return sortProjects(projects);
+}
+
+export const projects: CompletedProject[] = sortProjects(
+  projectData.map((projectDataItem) => {
+    return {
+      ...getProjectDetails(projectDataItem),
+      media: [
+        ...projectDataItem.fallbackMedia,
+        ...(projectDataItem.youtubeMedia ?? []),
+      ],
+    };
+  }),
 );
+
+export const sortedProjects = projects;
+
+function getProjectDetails(project: ProjectData): Omit<CompletedProject, "media"> {
+  const { mediaFolder, fallbackMedia, youtubeMedia, ...projectDetails } =
+    project;
+
+  return projectDetails;
+}
 
 export function formatProjectDate(date: string) {
   return new Intl.DateTimeFormat("en-PH", {

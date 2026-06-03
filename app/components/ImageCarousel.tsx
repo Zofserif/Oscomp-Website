@@ -1,79 +1,108 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { ServiceMedia } from "../lib/services";
 
 type ImageCarouselProps = {
   id: string;
-  images: string[];
+  media: ServiceMedia[];
   alt: string;
 };
 
-export function ImageCarousel({ id, images, alt }: ImageCarouselProps) {
+function toggleNativeVideo(video: HTMLVideoElement) {
+  if (video.paused) {
+    void video.play();
+    return;
+  }
+
+  video.pause();
+}
+
+export function ImageCarousel({ id, media, alt }: ImageCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [manualChangeCount, setManualChangeCount] = useState(0);
-  const safeActiveIndex = images.length > 0 ? activeIndex % images.length : 0;
-  const activeImage = images[safeActiveIndex];
+  const safeActiveIndex = media.length > 0 ? activeIndex % media.length : 0;
+  const activeMedia = media[safeActiveIndex];
 
   useEffect(() => {
-    if (images.length <= 1) return undefined;
+    if (media.length <= 1 || activeMedia?.type === "video") return undefined;
 
     const slideTimer = window.setInterval(() => {
-      setActiveIndex((current) => (current + 1) % images.length);
+      setActiveIndex((current) => (current + 1) % media.length);
     }, 4000);
 
     return () => window.clearInterval(slideTimer);
-  }, [images.length, manualChangeCount]);
+  }, [activeMedia?.type, media.length, manualChangeCount]);
 
-  if (!activeImage) {
+  if (!activeMedia) {
     return null;
   }
 
-  function setManualImage(nextIndex: number) {
-    setActiveIndex((nextIndex + images.length) % images.length);
+  function setManualMedia(nextIndex: number) {
+    setActiveIndex((nextIndex + media.length) % media.length);
     setManualChangeCount((count) => count + 1);
   }
 
   return (
     <div className="image-gallery" id={id}>
       <div className="image-gallery-frame">
-        <img
-          className="image-gallery-image"
-          src={activeImage}
-          alt={`${alt} ${safeActiveIndex + 1}`}
-          loading="lazy"
-          decoding="async"
-        />
-        {images.length > 1 ? (
+        {activeMedia.type === "image" ? (
+          <img
+            className="image-gallery-image"
+            src={activeMedia.src}
+            alt={activeMedia.alt ?? `${alt} ${safeActiveIndex + 1}`}
+            loading="lazy"
+            decoding="async"
+          />
+        ) : (
+          <video
+            className="image-gallery-video"
+            src={activeMedia.src}
+            autoPlay
+            muted
+            playsInline
+            preload="metadata"
+            title={activeMedia.title ?? `${alt} video ${safeActiveIndex + 1}`}
+            onClick={(event) => toggleNativeVideo(event.currentTarget)}
+          />
+        )}
+        {media.length > 1 ? (
           <div className="image-gallery-controls" aria-label={`${alt} gallery controls`}>
             <button
               type="button"
-              onClick={() => setManualImage(safeActiveIndex - 1)}
-              aria-label="Show previous image"
+              onClick={() => setManualMedia(safeActiveIndex - 1)}
+              aria-label="Show previous media"
             >
               <span aria-hidden="true">‹</span>
             </button>
             <button
               type="button"
-              onClick={() => setManualImage(safeActiveIndex + 1)}
-              aria-label="Show next image"
+              onClick={() => setManualMedia(safeActiveIndex + 1)}
+              aria-label="Show next media"
             >
               <span aria-hidden="true">›</span>
             </button>
           </div>
         ) : null}
       </div>
-      {images.length > 1 ? (
+      {media.length > 1 ? (
         <div className="image-gallery-strip" aria-label={`${alt} thumbnails`}>
-          {images.map((image, index) => (
+          {media.map((mediaItem, index) => (
             <button
               className={index === safeActiveIndex ? "active" : ""}
-              key={image}
+              key={mediaItem.src}
               type="button"
-              onClick={() => setManualImage(index)}
-              aria-label={`Show image ${index + 1}`}
+              onClick={() => setManualMedia(index)}
+              aria-label={`Show ${mediaItem.type} ${index + 1}`}
               aria-current={index === safeActiveIndex ? "true" : "false"}
             >
-              <img src={image} alt="" loading="lazy" decoding="async" />
+              {mediaItem.type === "image" ? (
+                <img src={mediaItem.src} alt="" loading="lazy" decoding="async" />
+              ) : (
+                <span className="image-gallery-video-thumb" aria-hidden="true">
+                  <span className="material-icons">play_arrow</span>
+                </span>
+              )}
             </button>
           ))}
         </div>

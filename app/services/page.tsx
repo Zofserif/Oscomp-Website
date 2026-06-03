@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ImageCarousel } from "../components/ImageCarousel";
+import { ServiceInquiryModal } from "../components/ServiceInquiryModal";
+import { getServiceMedia } from "../lib/service-media";
 import { services } from "../lib/services";
 import { metadataFor } from "../lib/site";
+
+export const revalidate = 300;
 
 export const metadata: Metadata = metadataFor({
   title: "Services",
@@ -11,7 +15,14 @@ export const metadata: Metadata = metadataFor({
   path: "/services",
 });
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const serviceMedia = await Promise.all(
+    services.map(async (service) => ({
+      service,
+      media: await getServiceMedia(service),
+    })),
+  );
+
   return (
     <main>
       <section className="page-hero">
@@ -28,7 +39,7 @@ export default function ServicesPage() {
       <section className="section-pad">
         <div className="container">
           <div className="service-detail-list">
-            {services.map((service, index) => (
+            {serviceMedia.map(({ service, media }, index) => (
               <article
                 className={`service-detail${index % 2 === 1 ? " service-detail-reverse" : ""}`}
                 key={service.slug}
@@ -36,25 +47,27 @@ export default function ServicesPage() {
                 <div>
                   <ImageCarousel
                     id={`service-gallery-${service.slug}`}
-                    images={service.images}
+                    media={media}
                     alt={service.alt}
                   />
                 </div>
                 <div className="service-detail-copy">
                   <p className="eyebrow">{service.eyebrow}</p>
-                  <h2>{service.title}</h2>
+                  <h2>
+                    <Link href={`/services/${service.slug}`}>
+                      {service.title}
+                    </Link>
+                  </h2>
                   <p>{service.description}</p>
                   <ul className="check-list">
                     {service.bullets.map((bullet) => (
                       <li key={bullet}>{bullet}</li>
                     ))}
                   </ul>
-                  <Link
-                    className="btn btn-primary shadow"
-                    href={`/services/${service.slug}`}
-                  >
-                    View service
-                  </Link>
+                  <ServiceInquiryModal
+                    serviceCategory={service.category}
+                    serviceTitle={service.title}
+                  />
                 </div>
               </article>
             ))}

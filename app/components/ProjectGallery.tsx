@@ -14,6 +14,68 @@ type ProjectGalleryProps = {
   projects: CompletedProject[];
 };
 
+type YoutubeVideoEmbedProps = {
+  src: string;
+  title: string;
+};
+
+function sendYoutubeCommand(
+  iframe: HTMLIFrameElement | null,
+  command: "mute" | "pauseVideo" | "playVideo"
+) {
+  iframe?.contentWindow?.postMessage(
+    JSON.stringify({ event: "command", func: command, args: [] }),
+    "https://www.youtube.com"
+  );
+}
+
+function YoutubeVideoEmbed({ src, title }: YoutubeVideoEmbedProps) {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [isPaused, setIsPaused] = useState(false);
+
+  const handleLoad = useCallback(() => {
+    sendYoutubeCommand(iframeRef.current, "mute");
+    sendYoutubeCommand(iframeRef.current, "playVideo");
+    setIsPaused(false);
+  }, []);
+
+  const togglePlayback = useCallback(() => {
+    const nextPaused = !isPaused;
+
+    sendYoutubeCommand(iframeRef.current, nextPaused ? "pauseVideo" : "playVideo");
+    setIsPaused(nextPaused);
+  }, [isPaused]);
+
+  return (
+    <div className="project-modal-video-shell">
+      <iframe
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowFullScreen
+        className="project-modal-video"
+        ref={iframeRef}
+        src={src}
+        title={title}
+        onLoad={handleLoad}
+      />
+      <button
+        className="project-video-toggle"
+        type="button"
+        aria-label={isPaused ? "Resume project video" : "Pause project video"}
+        onClick={togglePlayback}
+      />
+    </div>
+  );
+}
+
+function toggleNativeVideo(video: HTMLVideoElement) {
+  if (video.paused) {
+    void video.play();
+    return;
+  }
+
+  video.pause();
+}
+
 export function ProjectGallery({ projects }: ProjectGalleryProps) {
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
   const [activeMediaIndex, setActiveMediaIndex] = useState(0);
@@ -117,7 +179,7 @@ export function ProjectGallery({ projects }: ProjectGalleryProps) {
   function formatMediaCount(project: CompletedProject) {
     const imageCount = getProjectImages(project).length;
     const videoCount = project.media.filter(
-      (item) => item.type === "youtube-video"
+      (item) => item.type === "video" || item.type === "youtube-video"
     ).length;
     const parts = [];
 
@@ -150,7 +212,8 @@ export function ProjectGallery({ projects }: ProjectGalleryProps) {
       );
     }
 
-    const poster = getYoutubePosterSrc(thumbnail);
+    const poster =
+      thumbnail.type === "video" ? thumbnail.poster : getYoutubePosterSrc(thumbnail);
 
     if (poster) {
       return (
@@ -160,6 +223,14 @@ export function ProjectGallery({ projects }: ProjectGalleryProps) {
           loading="lazy"
           decoding="async"
         />
+      );
+    }
+
+    if (thumbnail.type === "video") {
+      return (
+        <div className="project-video-placeholder" aria-hidden="true">
+          <span className="material-icons">play_circle</span>
+        </div>
       );
     }
 
@@ -181,6 +252,22 @@ export function ProjectGallery({ projects }: ProjectGalleryProps) {
       );
     }
 
+    if (media.type === "video") {
+      return (
+        <video
+          className="project-modal-video"
+          src={media.src}
+          autoPlay
+          muted
+          playsInline
+          preload="metadata"
+          poster={media.poster}
+          title={media.title || `${project.title} video`}
+          onClick={(event) => toggleNativeVideo(event.currentTarget)}
+        />
+      );
+    }
+
     const embedSrc = getYoutubeEmbedSrc(media.url);
 
     if (!embedSrc) {
@@ -194,10 +281,7 @@ export function ProjectGallery({ projects }: ProjectGalleryProps) {
     }
 
     return (
-      <iframe
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowFullScreen
-        className="project-modal-video"
+      <YoutubeVideoEmbed
         key={media.url}
         src={embedSrc}
         title={media.title || `${project.title} video`}
@@ -210,7 +294,7 @@ export function ProjectGallery({ projects }: ProjectGalleryProps) {
       return <img src={media.src} alt="" loading="lazy" decoding="async" />;
     }
 
-    const poster = getYoutubePosterSrc(media);
+    const poster = media.type === "video" ? media.poster : getYoutubePosterSrc(media);
 
     if (poster) {
       return <img src={poster} alt="" loading="lazy" decoding="async" />;
@@ -348,7 +432,9 @@ export function ProjectGallery({ projects }: ProjectGalleryProps) {
                       key={
                         media.type === "image"
                           ? media.src
-                          : `youtube-video-${media.url}`
+                          : media.type === "video"
+                            ? `video-${media.src}`
+                            : `youtube-video-${media.url}`
                       }
                       type="button"
                       aria-label={`Show project ${

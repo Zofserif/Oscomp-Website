@@ -3,8 +3,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ImageCarousel } from "../../components/ImageCarousel";
 import { ServiceInquiryModal } from "../../components/ServiceInquiryModal";
+import { getServiceMedia } from "../../lib/service-media";
 import { getServiceBySlug, services } from "../../lib/services";
 import { metadataFor } from "../../lib/site";
+
+export const revalidate = 300;
 
 type ServicePageProps = {
   params: Promise<{
@@ -47,6 +50,8 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
     notFound();
   }
 
+  const media = await getServiceMedia(service);
+
   return (
     <main>
       <section className="page-hero service-page-hero">
@@ -74,7 +79,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
           <div className="service-detail-page-grid">
             <ImageCarousel
               id={`service-detail-gallery-${service.slug}`}
-              images={service.images}
+              media={media}
               alt={service.alt}
             />
             <div className="service-detail-copy">

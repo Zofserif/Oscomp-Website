@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ProjectGallery } from "../components/ProjectGallery";
-import { getProjectImages, sortedProjects } from "../lib/projects";
+import { getProjectImages, getProjects } from "../lib/projects";
 import { metadataFor, site, siteUrl } from "../lib/site";
 
 export const metadata: Metadata = metadataFor({
@@ -11,41 +11,54 @@ export const metadata: Metadata = metadataFor({
   path: "/projects"
 });
 
-const projectsJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  name: "OSCOMP completed projects",
-  description:
-    "Completed OSCOMP project highlights for CCTV installation, security camera support, computer repair, and IT solutions in CALABARZON.",
-  url: `${siteUrl}/projects`,
-  publisher: {
-    "@type": "LocalBusiness",
-    name: site.name,
-    url: siteUrl,
-    logo: `${siteUrl}${site.logo}`
-  },
-  mainEntity: sortedProjects.map((project, index) => ({
-    "@type": "CreativeWork",
-    position: index + 1,
-    name: project.title,
-    description: project.excerpt,
-    about: project.tags,
-    datePublished: project.completedAt,
-    dateModified: project.updatedAt,
-    image: getProjectImages(project).map((image) => `${siteUrl}${image.src}`),
-    locationCreated: {
-      "@type": "Place",
-      name: project.location
-    },
-    provider: {
+export const revalidate = 300;
+
+function getAbsoluteMediaUrl(src: string) {
+  if (src.startsWith("http://") || src.startsWith("https://")) {
+    return src;
+  }
+
+  return `${siteUrl}${src}`;
+}
+
+export default async function ProjectsPage() {
+  const projects = await getProjects();
+  const projectsJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "OSCOMP completed projects",
+    description:
+      "Completed OSCOMP project highlights for CCTV installation, security camera support, computer repair, and IT solutions in CALABARZON.",
+    url: `${siteUrl}/projects`,
+    publisher: {
       "@type": "LocalBusiness",
       name: site.name,
-      url: siteUrl
-    }
-  }))
-};
+      url: siteUrl,
+      logo: `${siteUrl}${site.logo}`
+    },
+    mainEntity: projects.map((project, index) => ({
+      "@type": "CreativeWork",
+      position: index + 1,
+      name: project.title,
+      description: project.excerpt,
+      about: project.tags,
+      datePublished: project.completedAt,
+      dateModified: project.updatedAt,
+      image: getProjectImages(project).map((image) =>
+        getAbsoluteMediaUrl(image.src),
+      ),
+      locationCreated: {
+        "@type": "Place",
+        name: project.location
+      },
+      provider: {
+        "@type": "LocalBusiness",
+        name: site.name,
+        url: siteUrl
+      }
+    }))
+  };
 
-export default function ProjectsPage() {
   return (
     <main>
       <script
@@ -78,7 +91,7 @@ export default function ProjectsPage() {
             </p>
           </div>
 
-          <ProjectGallery projects={sortedProjects} />
+          <ProjectGallery projects={projects} />
 
           <div className="center-actions">
             <Link className="btn btn-primary shadow" href="/quotation">

@@ -902,9 +902,30 @@ a:hover {
     display: block;
 }
 
+.project-modal-video-shell {
+    position: relative;
+}
+
+.project-video-toggle {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+}
+
+.project-video-toggle:focus-visible {
+    outline: 3px solid rgba(15, 92, 182, 0.75);
+    outline-offset: -6px;
+}
+
 .project-modal-controls {
     position: absolute;
     inset: 50% 0 auto;
+    z-index: 2;
     display: flex;
     justify-content: space-between;
     padding: 0 0.8rem;
@@ -1143,10 +1164,20 @@ a:hover {
     box-shadow: var(--shadow-sm);
 }
 
-.image-gallery-image {
+.image-gallery-image,
+.image-gallery-video {
+    display: block;
     width: 100%;
     aspect-ratio: 4 / 3;
+}
+
+.image-gallery-image {
     object-fit: cover;
+}
+
+.image-gallery-video {
+    background: #111827;
+    object-fit: contain;
 }
 
 .image-gallery-controls {
@@ -1198,10 +1229,26 @@ a:hover {
     border-color: var(--brand-blue);
 }
 
-.image-gallery-strip img {
+.image-gallery-strip img,
+.image-gallery-video-thumb {
+    display: block;
     width: 100%;
     aspect-ratio: 4 / 3;
+}
+
+.image-gallery-strip img {
     object-fit: cover;
+}
+
+.image-gallery-video-thumb {
+    display: grid;
+    place-items: center;
+    background: #0f172a;
+    color: #fff;
+}
+
+.image-gallery-video-thumb .material-icons {
+    font-size: 1.65rem;
 }
 
 .contact-layout {
