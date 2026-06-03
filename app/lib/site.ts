@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 
 const rawSiteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ||
-  (process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
+  (process.env.NODE_ENV === "production"
+    ? "https://www.oscompcctv.com"
     : "http://localhost:3000");
 
 export const siteUrl = rawSiteUrl.replace(/\/$/, "");
