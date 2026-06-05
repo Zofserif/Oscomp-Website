@@ -1,6 +1,13 @@
 "use client";
 
-import { FormEvent, useCallback, useRef, useState } from "react";
+import {
+  FormEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 /* ------------------------------------------------------------------ */
 /*  Data                                                               */
@@ -8,39 +15,34 @@ import { FormEvent, useCallback, useRef, useState } from "react";
 
 const serviceOptions = [
   {
-    value: "CCTV Sales and Installation",
-    label: "CCTV Sales & Installation",
+    value: "CCTV / Security System Installation",
+    label: "CCTV / Security System Installation",
     icon: "videocam",
   },
   {
-    value: "CCTV Maintenance and Troubleshooting",
-    label: "CCTV Maintenance & Repair",
+    value: "CCTV / Security System Repair or Maintenance",
+    label: "CCTV / Security System Repair or Maintenance",
     icon: "build",
   },
   {
-    value: "Security Camera Setup",
-    label: "Security Camera Setup",
-    icon: "security",
-  },
-  {
-    value: "Computer Repairs",
-    label: "Computer Repairs",
+    value: "Computer or Accessories Repair",
+    label: "Computer or Accessories Repair",
     icon: "computer",
   },
   {
-    value: "IT Solutions",
-    label: "IT Solutions",
+    value: "Attendance / Access Control System Installation",
+    label: "Attendance / Access Control System Installation",
+    icon: "vpn_key",
+  },
+  {
+    value: "IT Solutions Consultation",
+    label: "IT Solutions Consultation",
     icon: "cloud",
   },
   {
-    value: "Networking and Cybersecurity",
-    label: "Networking & Cybersecurity",
-    icon: "lock",
-  },
-  {
-    value: "Other Technology Support",
-    label: "Other Tech Support",
-    icon: "more_horiz",
+    value: "Custom Software Solution",
+    label: "Custom Software Solution",
+    icon: "code",
   },
 ];
 
@@ -54,12 +56,21 @@ const propertyTypes = [
 ];
 
 const TOTAL_STEPS = 3;
+const LOCATION_SUGGESTION_LIMIT = 10;
+const PHOTO_MAX_SIZE_BYTES = 2 * 1024 * 1024;
+const PHOTO_ACCEPTED_TYPES = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/heic",
+  "image/heif",
+]);
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
 /* ------------------------------------------------------------------ */
 
-interface FormData {
+interface InquiryFormData {
   name: string;
   phone: string;
   email: string;
@@ -70,14 +81,41 @@ interface FormData {
   message: string;
 }
 
-type FieldErrors = Partial<Record<keyof FormData, string>>;
+type FieldErrors = Partial<Record<keyof InquiryFormData, string>>;
+
+type AddressLoadStatus = "idle" | "ready" | "error";
+
+type ProvinceAddress = {
+  province_code: string;
+  province_name: string;
+};
+
+type CityAddress = {
+  city_code: string;
+  city_name: string;
+  province_code: string;
+};
+
+type BarangayAddress = {
+  brgy_code: string;
+  brgy_name: string;
+  city_code: string;
+  province_code: string;
+};
+
+type AddressSuggestion = {
+  id: string;
+  label: string;
+  searchText: string;
+};
 
 type FormStatus =
   | { type: "idle"; message: "" }
   | { type: "success"; message: string }
+  | { type: "warning"; message: string }
   | { type: "error"; message: string };
 
-const INITIAL: FormData = {
+const INITIAL: InquiryFormData = {
   name: "",
   phone: "",
   email: "",
@@ -92,7 +130,7 @@ const INITIAL: FormData = {
 /*  Helpers                                                            */
 /* ------------------------------------------------------------------ */
 
-function validateField(name: keyof FormData, value: string): string {
+function validateField(name: keyof InquiryFormData, value: string): string {
   const v = value.trim();
   switch (name) {
     case "name":
@@ -118,10 +156,40 @@ function validateField(name: keyof FormData, value: string): string {
   }
 }
 
-function buildMessage(data: FormData): string {
+function buildMessage(data: InquiryFormData): string {
   const parts: string[] = [];
   if (data.message.trim()) parts.push(`Notes: ${data.message.trim()}`);
   return parts.join("\n") || "No additional details provided.";
+}
+
+function formatFileSize(size: number) {
+  if (size >= 1024 * 1024) {
+    return `${(size / (1024 * 1024)).toFixed(1)} MB`;
+  }
+
+  return `${Math.max(1, Math.round(size / 1024))} KB`;
+}
+
+function validatePhoto(file: File | null) {
+  if (!file) return "";
+
+  if (!PHOTO_ACCEPTED_TYPES.has(file.type)) {
+    return "Please attach a JPEG, PNG, WebP, HEIC, or HEIF photo.";
+  }
+
+  if (file.size > PHOTO_MAX_SIZE_BYTES) {
+    return "Photo must be 2 MB or smaller.";
+  }
+
+  return "";
+}
+
+async function fetchAddressJson<T>(path: string): Promise<T> {
+  const response = await fetch(path);
+  if (!response.ok) {
+    throw new Error(`Unable to load ${path}`);
+  }
+  return (await response.json()) as T;
 }
 
 /* ------------------------------------------------------------------ */
@@ -130,21 +198,111 @@ function buildMessage(data: FormData): string {
 
 export function QuotationForm() {
   const [step, setStep] = useState(1);
-  const [data, setData] = useState<FormData>(INITIAL);
+  const [data, setData] = useState<InquiryFormData>(INITIAL);
   const [errors, setErrors] = useState<FieldErrors>({});
-  const [touched, setTouched] = useState<Set<keyof FormData>>(new Set());
+  const [touched, setTouched] = useState<Set<keyof InquiryFormData>>(new Set());
   const [status, setStatus] = useState<FormStatus>({
     type: "idle",
     message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [photo, setPhoto] = useState<File | null>(null);
+  const [photoError, setPhotoError] = useState("");
+  const [addressLoadStatus, setAddressLoadStatus] =
+    useState<AddressLoadStatus>("idle");
+  const [addressSuggestions, setAddressSuggestions] = useState<
+    AddressSuggestion[]
+  >([]);
+  const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
+  const [isPhotoDragging, setIsPhotoDragging] = useState(false);
 
   const formRef = useRef<HTMLFormElement>(null);
+  const photoInputRef = useRef<HTMLInputElement>(null);
+  const addressLoadStartedRef = useRef(false);
+
+  useEffect(() => {
+    if (
+      step !== 2 ||
+      addressLoadStatus !== "idle" ||
+      addressLoadStartedRef.current
+    ) {
+      return;
+    }
+
+    let isCancelled = false;
+    addressLoadStartedRef.current = true;
+
+    async function loadAddresses() {
+      try {
+        const [provinces, cities, barangays] = await Promise.all([
+          fetchAddressJson<ProvinceAddress[]>("/ph-address/province.json"),
+          fetchAddressJson<CityAddress[]>("/ph-address/city.json"),
+          fetchAddressJson<BarangayAddress[]>("/ph-address/barangay.json"),
+        ]);
+
+        if (isCancelled) return;
+
+        const provincesByCode = new Map(
+          provinces.map((province) => [
+            province.province_code,
+            province.province_name,
+          ]),
+        );
+        const citiesByCode = new Map(
+          cities.map((city) => [city.city_code, city]),
+        );
+
+        const nextSuggestions = barangays.flatMap((barangay) => {
+          const city = citiesByCode.get(barangay.city_code);
+          const provinceName = provincesByCode.get(barangay.province_code);
+
+          if (!city || !provinceName) {
+            return [];
+          }
+
+          const label = `${city.city_name}, ${provinceName}, ${barangay.brgy_name}`;
+
+          return [
+            {
+              id: barangay.brgy_code,
+              label,
+              searchText: label.toLowerCase(),
+            },
+          ];
+        });
+
+        setAddressSuggestions(nextSuggestions);
+        setAddressLoadStatus("ready");
+      } catch {
+        if (!isCancelled) {
+          setAddressLoadStatus("error");
+        }
+      }
+    }
+
+    void loadAddresses();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [addressLoadStatus, step]);
+
+  const locationMatches = useMemo(() => {
+    const query = data.location.trim().toLowerCase();
+
+    if (query.length < 2 || addressLoadStatus !== "ready") {
+      return [];
+    }
+
+    return addressSuggestions
+      .filter((suggestion) => suggestion.searchText.includes(query))
+      .slice(0, LOCATION_SUGGESTION_LIMIT);
+  }, [addressLoadStatus, addressSuggestions, data.location]);
 
   /* ---- field helpers ---- */
 
   const update = useCallback(
-    <K extends keyof FormData>(name: K, value: string) => {
+    <K extends keyof InquiryFormData>(name: K, value: string) => {
       setData((prev) => ({ ...prev, [name]: value }));
       if (touched.has(name)) {
         setErrors((prev) => {
@@ -165,7 +323,7 @@ export function QuotationForm() {
     [touched],
   );
 
-  const blur = useCallback((name: keyof FormData) => {
+  const blur = useCallback((name: keyof InquiryFormData) => {
     setTouched((prev) => new Set(prev).add(name));
     setData((prev) => {
       const err = validateField(name, prev[name]);
@@ -184,7 +342,7 @@ export function QuotationForm() {
 
   /* ---- step validation ---- */
 
-  const stepFields: Record<number, (keyof FormData)[]> = {
+  const stepFields: Record<number, (keyof InquiryFormData)[]> = {
     1: ["name", "phone", "email"],
     2: ["service", "location"],
     3: [],
@@ -225,33 +383,57 @@ export function QuotationForm() {
     setStep((s) => Math.max(s - 1, 1));
   }
 
+  function updatePhoto(file: File | null) {
+    const error = validatePhoto(file);
+    setPhoto(file);
+    setPhotoError(error);
+  }
+
+  function clearPhoto() {
+    updatePhoto(null);
+    if (photoInputRef.current) {
+      photoInputRef.current.value = "";
+    }
+  }
+
   /* ---- submit ---- */
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!validateStep(step)) return;
 
+    const nextPhotoError = validatePhoto(photo);
+    if (nextPhotoError) {
+      setPhotoError(nextPhotoError);
+      return;
+    }
+
     setIsSubmitting(true);
     setStatus({ type: "idle", message: "" });
 
-    const payload = {
-      name: data.name.trim(),
-      phone: data.phone.trim(),
-      email: data.email.trim(),
-      service: data.service,
-      location: data.location.trim(),
-      propertyType: data.propertyType,
-      message: buildMessage(data),
-    };
+    const payload = new window.FormData();
+    payload.append("name", data.name.trim());
+    payload.append("phone", data.phone.trim());
+    payload.append("email", data.email.trim());
+    payload.append("service", data.service);
+    payload.append("location", data.location.trim());
+    payload.append("propertyType", data.propertyType);
+    payload.append("message", buildMessage(data));
+    if (photo) {
+      payload.append("photo", photo);
+    }
 
     try {
       const response = await fetch("/api/quotation", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: payload,
       });
 
-      const result = (await response.json()) as { error?: string };
+      const result = (await response.json()) as {
+        error?: string;
+        photoAttached?: boolean;
+        warning?: string;
+      };
 
       if (!response.ok) {
         throw new Error(result.error || "Unable to send inquiry.");
@@ -262,11 +444,21 @@ export function QuotationForm() {
       setStep(1);
       setTouched(new Set());
       setErrors({});
-      setStatus({
-        type: "success",
-        message:
-          "Inquiry sent! OSCOMP will review the details and get back to you.",
-      });
+      setPhoto(null);
+      setPhotoError("");
+      if (result.warning) {
+        setStatus({
+          type: "warning",
+          message: result.warning,
+        });
+      } else {
+        setStatus({
+          type: "success",
+          message: result.photoAttached
+            ? "Inquiry sent with photo! OSCOMP will review the details and get back to you."
+            : "Inquiry sent! OSCOMP will review the details and get back to you.",
+        });
+      }
     } catch (error) {
       setStatus({
         type: "error",
@@ -280,7 +472,7 @@ export function QuotationForm() {
 
   /* ---- render helpers ---- */
 
-  function fieldClass(name: keyof FormData) {
+  function fieldClass(name: keyof InquiryFormData) {
     return `qf-field${errors[name] ? " qf-field-error" : ""}`;
   }
 
@@ -289,6 +481,16 @@ export function QuotationForm() {
       event.preventDefault();
       nextStep();
     }
+  }
+
+  function selectLocationSuggestion(location: string) {
+    update("location", location);
+    setShowLocationSuggestions(false);
+    setErrors((prev) => {
+      const next = { ...prev };
+      delete next.location;
+      return next;
+    });
   }
 
   return (
@@ -430,7 +632,7 @@ export function QuotationForm() {
                     }
                   }}
                 >
-                  <span className="material-icons qf-service-icon">
+                  <span className="material-icons qf-service-icon" aria-hidden="true">
                     {opt.icon}
                   </span>
                   <span>{opt.label}</span>
@@ -459,26 +661,69 @@ export function QuotationForm() {
             </select>
           </fieldset>
 
-          <label
-            className={fieldClass("location")}
+          <div
+            className={`${fieldClass("location")} qf-location-field`}
             style={{ marginTop: "1.25rem" }}
           >
-            <span>Project location *</span>
-            <input
-              name="location"
-              type="text"
-              autoComplete="address-level1"
-              required
-              maxLength={140}
-              placeholder="City, town, or barangay"
-              value={data.location}
-              onChange={(e) => update("location", e.target.value)}
-              onBlur={() => blur("location")}
-            />
+            <label htmlFor="service-location">Service location *</label>
+            <div className="qf-location-combobox">
+              <input
+                id="service-location"
+                name="location"
+                type="text"
+                autoComplete="off"
+                role="combobox"
+                aria-autocomplete="list"
+                aria-expanded={
+                  showLocationSuggestions && locationMatches.length > 0
+                }
+                aria-controls="service-location-suggestions"
+                required
+                maxLength={140}
+                placeholder="City/Municipality, Province, Barangay"
+                value={data.location}
+                onChange={(e) => {
+                  update("location", e.target.value);
+                  setShowLocationSuggestions(true);
+                }}
+                onBlur={() => {
+                  blur("location");
+                  setShowLocationSuggestions(false);
+                }}
+                onFocus={() => setShowLocationSuggestions(true)}
+              />
+              {showLocationSuggestions && locationMatches.length > 0 ? (
+                <div
+                  className="qf-location-suggestions"
+                  id="service-location-suggestions"
+                  role="listbox"
+                >
+                  {locationMatches.map((suggestion) => (
+                    <button
+                      type="button"
+                      key={suggestion.id}
+                      className="qf-location-suggestion"
+                      onMouseDown={(event) => event.preventDefault()}
+                      onClick={() => selectLocationSuggestion(suggestion.label)}
+                      role="option"
+                      aria-selected={data.location === suggestion.label}
+                    >
+                      {suggestion.label}
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+            {addressLoadStatus === "error" ? (
+              <span className="qf-field-note">
+                Address suggestions are unavailable, but you can still type the
+                service location.
+              </span>
+            ) : null}
             {errors.location && (
               <span className="qf-error-msg">{errors.location}</span>
             )}
-          </label>
+          </div>
 
           <div className="qf-step-actions">
             <button
@@ -501,7 +746,7 @@ export function QuotationForm() {
 
       {/* ------- Step 3: Project Details ------- */}
       {step === 3 && (
-        <div className="qf-step">
+        <div className="qf-step qf-step-compact">
           {/* Property type */}
           <fieldset className="qf-service-group">
             <legend className="qf-legend">Property type</legend>
@@ -535,7 +780,7 @@ export function QuotationForm() {
             <span>Additional notes</span>
             <textarea
               name="message"
-              rows={5}
+              rows={3}
               maxLength={1000}
               placeholder="Describe the site, security concerns, camera preferences, or anything else that helps us prepare."
               value={data.message}
@@ -544,7 +789,64 @@ export function QuotationForm() {
             <span className="qf-char-count">{data.message.length}/1000</span>
           </label>
 
-          <div className="qf-step-actions">
+          <div className={`qf-field qf-photo-field${photoError ? " qf-field-error" : ""}`}>
+            <span>Upload photo for your service location (optional)</span>
+            <label
+              className={`qf-photo-dropzone${isPhotoDragging ? " active" : ""}`}
+              htmlFor="inquiry-photo"
+              onDragOver={(event) => {
+                event.preventDefault();
+                setIsPhotoDragging(true);
+              }}
+              onDragLeave={() => setIsPhotoDragging(false)}
+              onDrop={(event) => {
+                event.preventDefault();
+                setIsPhotoDragging(false);
+                const file = event.dataTransfer.files.item(0);
+                updatePhoto(file);
+                if (photoInputRef.current) {
+                  photoInputRef.current.value = "";
+                }
+              }}
+            >
+              <span className="material-icons" aria-hidden="true">
+                add_photo_alternate
+              </span>
+              <span>
+                <strong>Upload or drag image</strong>
+                <small>JPEG, PNG, WebP, HEIC, HEIF up to 2 MB</small>
+              </span>
+              <input
+                id="inquiry-photo"
+                name="photo"
+                type="file"
+                accept="image/*"
+                ref={photoInputRef}
+                onChange={(event) => {
+                  updatePhoto(event.target.files?.[0] ?? null);
+                }}
+              />
+            </label>
+            {photo ? (
+              <div className="qf-photo-selection">
+                <span>
+                  {photo.name} ({formatFileSize(photo.size)})
+                </span>
+                <button
+                  type="button"
+                  className="qf-photo-clear"
+                  onClick={clearPhoto}
+                >
+                  Remove
+                </button>
+              </div>
+            ) : null}
+            {photoError ? (
+              <span className="qf-error-msg">{photoError}</span>
+            ) : null}
+          </div>
+
+          <div className="qf-step-actions qf-step-actions-compact">
             <button
               type="button"
               className="btn btn-outline-primary"

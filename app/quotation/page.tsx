@@ -17,7 +17,7 @@ export default function QuotationPage() {
           <p className="eyebrow">Inquiry form</p>
           <h1>Send a CCTV and security inquiry</h1>
           <p>
-            Share your security camera needs and project location so OSCOMP can
+            Share your security camera needs and service location so OSCOMP can
             review the details and recommend the right next step.
           </p>
         </div>

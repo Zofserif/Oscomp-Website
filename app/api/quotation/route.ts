@@ -11,6 +11,11 @@ type QuotationRequest = {
   message?: unknown;
 };
 
+type ParsedQuotationRequest = {
+  body: QuotationRequest;
+  photo: File | null;
+};
+
 const fieldLimits = {
   name: 80,
   phone: 30,
@@ -22,6 +27,22 @@ const fieldLimits = {
   message: 1000
 };
 
+const photoMaxSize = 2 * 1024 * 1024;
+const photoMimeTypes = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/heic",
+  "image/heif"
+]);
+const photoExtensions: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "image/heic": "heic",
+  "image/heif": "heif"
+};
+
 function cleanField(value: unknown, limit: number) {
   return typeof value === "string" ? value.trim().slice(0, limit) : "";
 }
@@ -30,24 +51,79 @@ function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+function isFile(value: FormDataEntryValue | null): value is File {
+  return value instanceof File;
+}
+
+function getPhotoError(photo: File | null) {
+  if (!photo) return "";
+
+  if (!photoMimeTypes.has(photo.type)) {
+    return "Please attach a JPEG, PNG, WebP, HEIC, or HEIF photo.";
+  }
+
+  if (photo.size > photoMaxSize) {
+    return "Photo must be 2 MB or smaller.";
+  }
+
+  return "";
+}
+
+function getSafePhotoFilename(photo: File) {
+  const extension = photoExtensions[photo.type] || "jpg";
+  return `oscomp-inquiry-photo-${Date.now()}.${extension}`;
+}
+
+async function parseRequest(request: Request): Promise<ParsedQuotationRequest> {
+  const contentType = request.headers.get("content-type") || "";
+
+  if (contentType.includes("multipart/form-data")) {
+    const formData = await request.formData();
+    const photoField = formData.get("photo");
+
+    return {
+      body: {
+        name: formData.get("name"),
+        phone: formData.get("phone"),
+        email: formData.get("email"),
+        service: formData.get("service"),
+        category: formData.get("category"),
+        location: formData.get("location"),
+        propertyType: formData.get("propertyType"),
+        message: formData.get("message")
+      },
+      photo: isFile(photoField) && photoField.size > 0 ? photoField : null
+    };
+  }
+
+  if (contentType.includes("application/json")) {
+    return {
+      body: (await request.json()) as QuotationRequest,
+      photo: null
+    };
+  }
+
+  throw new Error("Unsupported inquiry payload.");
+}
+
 export async function POST(request: Request) {
-  let body: QuotationRequest;
+  let parsed: ParsedQuotationRequest;
 
   try {
-    body = (await request.json()) as QuotationRequest;
+    parsed = await parseRequest(request);
   } catch {
     return NextResponse.json({ error: "Invalid inquiry payload." }, { status: 400 });
   }
 
   const quotation = {
-    name: cleanField(body.name, fieldLimits.name),
-    phone: cleanField(body.phone, fieldLimits.phone),
-    email: cleanField(body.email, fieldLimits.email),
-    service: cleanField(body.service, fieldLimits.service),
-    category: cleanField(body.category, fieldLimits.category),
-    location: cleanField(body.location, fieldLimits.location),
-    propertyType: cleanField(body.propertyType, fieldLimits.propertyType),
-    message: cleanField(body.message, fieldLimits.message)
+    name: cleanField(parsed.body.name, fieldLimits.name),
+    phone: cleanField(parsed.body.phone, fieldLimits.phone),
+    email: cleanField(parsed.body.email, fieldLimits.email),
+    service: cleanField(parsed.body.service, fieldLimits.service),
+    category: cleanField(parsed.body.category, fieldLimits.category),
+    location: cleanField(parsed.body.location, fieldLimits.location),
+    propertyType: cleanField(parsed.body.propertyType, fieldLimits.propertyType),
+    message: cleanField(parsed.body.message, fieldLimits.message)
   };
 
   const category = quotation.category || quotation.service;
@@ -80,6 +156,11 @@ export async function POST(request: Request) {
     );
   }
 
+  const photoError = getPhotoError(parsed.photo);
+  if (photoError) {
+    return NextResponse.json({ error: photoError }, { status: 400 });
+  }
+
   const topic = process.env.NTFY_TOPIC?.trim();
 
   if (!topic) {
@@ -107,6 +188,8 @@ export async function POST(request: Request) {
     quotation.message
   ].join("\n");
 
+  const ntfyUrl = `${baseUrl}/${encodeURIComponent(topicPath)}`;
+
   try {
     const response = await fetch(`${baseUrl}/${encodeURIComponent(topicPath)}`, {
       method: "POST",
@@ -132,5 +215,39 @@ export async function POST(request: Request) {
     );
   }
 
-  return NextResponse.json({ ok: true });
+  if (parsed.photo) {
+    try {
+      const photoResponse = await fetch(ntfyUrl, {
+        method: "PUT",
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          "Content-Type": parsed.photo.type,
+          Filename: getSafePhotoFilename(parsed.photo),
+          Message: `Photo attachment for ${quotation.name}`,
+          Priority: "4",
+          Tags: "camera,framed_picture",
+          Title: `OSCOMP inquiry photo - ${category}`
+        },
+        body: parsed.photo
+      });
+
+      if (!photoResponse.ok) {
+        return NextResponse.json({
+          ok: true,
+          warning:
+            "Inquiry sent, but the photo could not be attached. Please send a smaller photo separately if needed."
+        });
+      }
+    } catch {
+      return NextResponse.json({
+        ok: true,
+        warning:
+          "Inquiry sent, but the photo could not be attached. Please send a smaller photo separately if needed."
+      });
+    }
+
+    return NextResponse.json({ ok: true, photoAttached: true });
+  }
+
+  return NextResponse.json({ ok: true, photoAttached: false });
 }
