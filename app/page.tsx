@@ -196,16 +196,30 @@ export default function HomePage() {
           <div className="hero-partner-strip" aria-label="OSCOMP partnered brands">
             <p>Partnered with</p>
             <div className="hero-partner-logos">
-              {brandLinks.map((brand) => (
-                <a
-                  href={brand.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  key={brand.href}
+              <div className="hero-partner-logo-track">
+                <div className="hero-partner-logo-set">
+                  {brandLinks.map((brand) => (
+                    <a
+                      href={brand.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      key={brand.href}
+                    >
+                      <img src={brand.src} alt={brand.alt} />
+                    </a>
+                  ))}
+                </div>
+                <div
+                  className="hero-partner-logo-set hero-partner-logo-set-duplicate"
+                  aria-hidden="true"
                 >
-                  <img src={brand.src} alt={brand.alt} />
-                </a>
-              ))}
+                  {brandLinks.map((brand) => (
+                    <span className="hero-partner-logo-duplicate" key={brand.href}>
+                      <img src={brand.src} alt="" />
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>

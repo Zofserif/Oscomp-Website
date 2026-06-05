@@ -442,6 +442,15 @@ a:hover {
     align-items: center;
 }
 
+.hero-partner-logo-track,
+.hero-partner-logo-set {
+    display: contents;
+}
+
+.hero-partner-logo-set-duplicate {
+    display: none;
+}
+
 .hero-partner-logos a {
     display: flex;
     min-height: 3.4rem;
@@ -451,6 +460,10 @@ a:hover {
     background: transparent;
     border: 0;
     border-radius: 0;
+}
+
+.hero-partner-logo-duplicate {
+    display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2283,8 +2296,21 @@ footer .pt-3 {
     }
 
     .site-hero {
-        min-height: 100dvh;
-        padding-block: 1.5rem 1rem;
+        min-height: 100svh;
+        padding-block: calc(var(--nav-height) + 1rem) 1rem;
+        background:
+            linear-gradient(
+                180deg,
+                rgba(7, 20, 38, 0.68),
+                rgba(7, 45, 58, 0.66)
+            ),
+            linear-gradient(
+                135deg,
+                rgba(9, 105, 168, 0.32),
+                rgba(10, 143, 119, 0.26)
+            ),
+            url("/assets/img/services/cctv-installation/Service-slideshow-01.jpg")
+                center / cover no-repeat;
     }
 
     .page-hero h1,
@@ -2292,24 +2318,45 @@ footer .pt-3 {
         font-size: 2.35rem;
     }
 
+    .site-hero > .container {
+        justify-content: space-between;
+    }
+
+    .hero-grid {
+        display: flex;
+        margin-block: auto;
+        text-align: center;
+    }
+
+    .hero-copy {
+        max-width: 36rem;
+        margin-inline: auto;
+    }
+
+    .hero-copy .eyebrow {
+        color: #7ef0b0;
+    }
+
+    .hero-copy h1 {
+        color: #fff;
+    }
+
+    .hero-lead {
+        max-width: 34rem;
+        margin-inline: auto;
+        color: rgba(255, 255, 255, 0.86);
+    }
+
+    .hero-actions {
+        justify-content: center;
+    }
+
     .section-heading h2 {
         font-size: 1.8rem;
     }
 
     .hero-media-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 0.75rem;
-    }
-
-    .hero-media,
-    .hero-media-large {
-        min-height: 0;
-        aspect-ratio: 4 / 3;
-    }
-
-    .hero-media-large {
-        grid-column: 1 / -1;
-        grid-row: auto;
+        display: none;
     }
 
     .feature-strip,
@@ -2321,15 +2368,95 @@ footer .pt-3 {
     }
 
     .hero-partner-logos {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        display: block;
+        overflow: hidden;
+        width: 100%;
+        -webkit-mask-image: linear-gradient(
+            90deg,
+            transparent,
+            #000 14%,
+            #000 86%,
+            transparent
+        );
+        mask-image: linear-gradient(
+            90deg,
+            transparent,
+            #000 14%,
+            #000 86%,
+            transparent
+        );
     }
 
-    .hero-partner-logos a {
+    .hero-partner-strip {
+        align-self: stretch;
+        gap: 0.7rem;
+        margin-top: clamp(1.25rem, 4vh, 2rem);
+        text-align: center;
+    }
+
+    .hero-partner-strip p {
+        color: rgba(255, 255, 255, 0.88);
+    }
+
+    .hero-partner-logo-track {
+        display: flex;
+        width: max-content;
+        animation: hero-partner-marquee 18s linear infinite;
+    }
+
+    .hero-partner-logo-set,
+    .hero-partner-logo-set-duplicate {
+        display: flex;
+        flex: 0 0 auto;
+        gap: 1.1rem;
+        padding-right: 1.1rem;
+    }
+
+    .hero-partner-logos a,
+    .hero-partner-logo-duplicate {
+        display: flex;
+        width: 8rem;
         min-height: 3rem;
+        align-items: center;
+        justify-content: center;
+        padding: 0.35rem 0.55rem;
     }
 
-    .hero-partner-logos img {
+    .hero-partner-logos img,
+    .hero-partner-logo-duplicate img {
         max-height: 1.9rem;
+        filter: grayscale(1) brightness(0) invert(1);
+        opacity: 0.78;
+    }
+
+    @keyframes hero-partner-marquee {
+        to {
+            transform: translateX(-50%);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .hero-partner-logos {
+            -webkit-mask-image: none;
+            mask-image: none;
+        }
+
+        .hero-partner-logo-track {
+            display: block;
+            width: auto;
+            animation: none;
+        }
+
+        .hero-partner-logo-set {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding-right: 0;
+        }
+
+        .hero-partner-logo-set-duplicate {
+            display: none;
+        }
     }
 
     .project-blog-grid .project-story-card:first-child {
