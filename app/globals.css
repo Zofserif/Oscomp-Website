@@ -364,6 +364,10 @@ a:hover {
     line-height: 1;
 }
 
+.mobile-sticky-cta {
+    display: none;
+}
+
 .hero-highlights {
     display: grid;
     gap: 0.7rem;
@@ -2313,6 +2317,10 @@ footer .pt-3 {
                 center / cover no-repeat;
     }
 
+    .landing-page {
+        padding-bottom: calc(5.75rem + env(safe-area-inset-bottom));
+    }
+
     .page-hero h1,
     .hero-copy h1 {
         font-size: 2.35rem;
@@ -2349,6 +2357,77 @@ footer .pt-3 {
 
     .hero-actions {
         justify-content: center;
+    }
+
+    .mobile-sticky-cta {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        display: block;
+        padding:
+            0.75rem 1rem
+            calc(0.75rem + env(safe-area-inset-bottom));
+        background: linear-gradient(
+            180deg,
+            rgba(248, 251, 255, 0),
+            rgba(248, 251, 255, 0.94) 34%,
+            rgba(248, 251, 255, 0.98)
+        );
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(110%);
+        transition:
+            opacity 180ms ease,
+            transform 180ms ease;
+        z-index: 1040;
+    }
+
+    .mobile-sticky-cta.is-visible {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+    }
+
+    .mobile-sticky-cta-link {
+        display: flex;
+        width: min(100%, 28rem);
+        min-height: 58px;
+        align-items: center;
+        justify-content: center;
+        margin-inline: auto;
+        padding: 0.95rem 1.35rem;
+        background: linear-gradient(135deg, var(--brand-blue), var(--brand-teal));
+        border-radius: 999px;
+        box-shadow:
+            0 18px 34px rgba(9, 105, 168, 0.26),
+            0 0 0 6px rgba(10, 143, 119, 0.11);
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 800;
+        gap: 0.55rem;
+        line-height: 1;
+        text-align: center;
+        text-decoration: none;
+    }
+
+    .mobile-sticky-cta-link:hover,
+    .mobile-sticky-cta-link:focus {
+        color: #fff;
+        text-decoration: none;
+    }
+
+    .mobile-sticky-cta-link:focus-visible {
+        outline: 3px solid rgba(9, 105, 168, 0.35);
+        outline-offset: 4px;
+    }
+
+    .mobile-sticky-cta-link .material-icons {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.15rem;
+        line-height: 1;
     }
 
     .section-heading h2 {
@@ -2436,6 +2515,10 @@ footer .pt-3 {
     }
 
     @media (prefers-reduced-motion: reduce) {
+        .mobile-sticky-cta {
+            transition: none;
+        }
+
         .hero-partner-logos {
             -webkit-mask-image: none;
             mask-image: none;

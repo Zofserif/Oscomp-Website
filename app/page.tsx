@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LandingContact } from "./components/LandingContact";
+import { MobileStickyCta } from "./components/MobileStickyCta";
 import { breadcrumbJsonLd, metadataFor } from "./lib/site";
 
 export const metadata: Metadata = metadataFor({
@@ -224,6 +225,7 @@ export default function HomePage() {
           </div>
         </div>
       </header>
+      <MobileStickyCta />
 
       <section className="section-pad">
         <div className="container">
