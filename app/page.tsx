@@ -95,28 +95,28 @@ const faqs = [
   {
     question: "How much does CCTV installation cost?",
     answer:
-      "CCTV installation cost depends on the number of cameras, recorder or storage needs, cable routing, property layout, and whether the site needs remote mobile viewing or extra troubleshooting support."
+      "CCTV installation cost depends on the number of cameras, recorder or storage needs, cable routing, property layout, and whether the site needs remote mobile viewing or extra troubleshooting support.",
   },
   {
     question: "Do you install CCTV systems in Candelaria, Quezon?",
     answer:
-      "Yes. OSCOMP provides CCTV installation in Candelaria, Quezon and supports nearby homes and businesses across CALABARZON."
+      "Yes. OSCOMP provides CCTV installation in Candelaria, Quezon and supports nearby homes and businesses across CALABARZON.",
   },
   {
     question: "Can OSCOMP set up mobile viewing for security cameras?",
     answer:
-      "Yes. OSCOMP can configure supported CCTV systems for mobile viewing, recorder setup, storage, camera placement, and practical post-installation support."
+      "Yes. OSCOMP can configure supported CCTV systems for mobile viewing, recorder setup, storage, camera placement, and practical post-installation support.",
   },
   {
     question: "Which CCTV brands do you support?",
     answer:
-      "OSCOMP works with supported CCTV and security camera brands including Hikvision, Dahua, ACTi, Axis, and TP-Link."
+      "OSCOMP works with supported CCTV and security camera brands including Hikvision, Dahua, ACTi, Axis, and TP-Link.",
   },
   {
     question: "Do you also provide IT solutions in Quezon?",
     answer:
-      "Yes. OSCOMP provides IT solutions in Quezon, including network setup, cybersecurity support, office application setup, computer repair, and ongoing technology assistance."
-  }
+      "Yes. OSCOMP provides IT solutions in Quezon, including network setup, cybersecurity support, office application setup, computer repair, and ongoing technology assistance.",
+  },
 ];
 
 export default function HomePage() {
@@ -128,47 +128,52 @@ export default function HomePage() {
       name: faq.question,
       acceptedAnswer: {
         "@type": "Answer",
-        text: faq.answer
-      }
-    }))
+        text: faq.answer,
+      },
+    })),
   };
   const breadcrumbJsonLdData = breadcrumbJsonLd([{ name: "Home", path: "/" }]);
 
   return (
-    <main>
+    <main className="landing-page">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify([faqJsonLd, breadcrumbJsonLdData])
+          __html: JSON.stringify([faqJsonLd, breadcrumbJsonLdData]),
         }}
       />
       <header className="site-hero">
         <div className="container">
           <div className="hero-grid">
             <div className="hero-copy">
-              <p className="eyebrow">CCTV installer in CALABARZON</p>
-              <h1>CCTV Installation and Security Camera Support</h1>
+              <p className="eyebrow">
+                For CALABARZON CCTV and Security system installation
+              </p>
+              <h1>
+                Your <span className="hero-highlight">24/7</span> protection
+                for your business location
+              </h1>
               <p className="hero-lead">
-                OSCOMP helps homes and businesses in Candelaria, Quezon and
-                CALABARZON secure their property with CCTV sales, installation,
-                camera setup, maintenance, and troubleshooting support.
+                Professional CCTV and security system services that help protect
+                your business location and provide clear records of your
+                surroundings.
               </p>
               <div className="hero-actions">
                 <Link
                   className="btn btn-primary hero-primary-cta"
                   href="/quotation"
                 >
-                  <span>Inquire Now</span>
+                  <span>Get Free Security Consultation</span>{" "}
                   <span className="material-icons" aria-hidden="true">
                     arrow_forward
                   </span>
                 </Link>
               </div>
-              <ul className="hero-highlights">
+              {/*<ul className="hero-highlights">
                 {highlights.map((highlight) => (
                   <li key={highlight}>{highlight}</li>
                 ))}
-              </ul>
+              </ul>*/}
             </div>
             <div className="hero-media-grid" aria-label="OSCOMP service images">
               <img
@@ -186,6 +191,21 @@ export default function HomePage() {
                 src="/assets/img/services/cctv-installation/Service-slideshow-14.jpg"
                 alt="Security camera equipment prepared for installation"
               />
+            </div>
+          </div>
+          <div className="hero-partner-strip" aria-label="OSCOMP partnered brands">
+            <p>Partnered with</p>
+            <div className="hero-partner-logos">
+              {brandLinks.map((brand) => (
+                <a
+                  href={brand.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  key={brand.href}
+                >
+                  <img src={brand.src} alt={brand.alt} />
+                </a>
+              ))}
             </div>
           </div>
         </div>
@@ -217,27 +237,6 @@ export default function HomePage() {
                   </div>
                 </article>
               </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="section-pad section-soft">
-        <div className="container">
-          <div className="section-heading">
-            <p className="eyebrow">Offered brands</p>
-            <h2>Everything you need for security is here</h2>
-          </div>
-          <div className="brand-cloud">
-            {brandLinks.map((brand) => (
-              <a
-                href={brand.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                key={brand.href}
-              >
-                <img src={brand.src} alt={brand.alt} loading="lazy" />
-              </a>
             ))}
           </div>
         </div>

@@ -2,17 +2,39 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { routes, site } from "../lib/site";
+
+const HOME_NAV_SCROLL_THRESHOLD = 80;
 
 export function Nav() {
   const pathname = usePathname();
   const [openPathname, setOpenPathname] = useState<string | null>(null);
+  const [showHomeNav, setShowHomeNav] = useState(false);
   const isOpen = openPathname === pathname;
+  const isHome = pathname === "/";
+
+  useEffect(() => {
+    if (!isHome) return;
+
+    function handleScroll() {
+      setShowHomeNav(window.scrollY > HOME_NAV_SCROLL_THRESHOLD);
+    }
+
+    const frame = window.requestAnimationFrame(handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [isHome]);
 
   return (
     <nav
-      className="navbar navbar-light navbar-expand-md fixed-top navbar-shrink py-3"
+      className={`navbar navbar-light navbar-expand-md fixed-top navbar-shrink py-3${
+        isHome ? ` landing-nav${showHomeNav ? " landing-nav-visible" : " landing-nav-hidden"}` : ""
+      }`}
       id="mainNav"
     >
       <div className="container">

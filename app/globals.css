@@ -121,6 +121,21 @@ a:hover {
     box-shadow: 0 10px 30px rgba(23, 32, 51, 0.08);
     backdrop-filter: blur(14px);
     z-index: 1030;
+    transition:
+        opacity 180ms ease,
+        transform 180ms ease;
+}
+
+.landing-nav-hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-100%);
+}
+
+.landing-nav-visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
 }
 
 .navbar-brand {
@@ -163,6 +178,10 @@ a:hover {
     box-shadow: var(--shadow-sm);
 }
 
+.landing-page {
+    margin-top: calc(-1 * var(--nav-height));
+}
+
 .site-hero,
 .page-hero {
     background:
@@ -175,8 +194,19 @@ a:hover {
 }
 
 .site-hero {
-    padding: 5.5rem 0 5rem;
+    display: flex;
+    min-height: 100dvh;
+    align-items: stretch;
+    padding: clamp(2rem, 4vh, 3.25rem) 0 1.5rem;
     overflow: hidden;
+}
+
+.site-hero > .container {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: clamp(1.4rem, 3vh, 2.25rem);
 }
 
 .page-hero {
@@ -229,6 +259,7 @@ a:hover {
     grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
     gap: 3.5rem;
     align-items: center;
+    margin-block: auto;
 }
 
 .hero-grid > *,
@@ -246,6 +277,23 @@ a:hover {
     margin: 1.25rem 0 0;
     font-size: 1.18rem;
     line-height: 1.7;
+}
+
+.hero-highlight {
+    display: inline-block;
+    padding: 0 0.04em 0.08em;
+    background:
+        linear-gradient(rgba(10, 143, 119, 0.32), rgba(10, 143, 119, 0.32))
+        left 76% / 0 0.34em no-repeat;
+    color: inherit;
+    animation: hero-highlight-draw 900ms 450ms cubic-bezier(0.22, 1, 0.36, 1)
+        forwards;
+}
+
+@keyframes hero-highlight-draw {
+    to {
+        background-size: 100% 0.34em;
+    }
 }
 
 .hero-actions {
@@ -363,6 +411,61 @@ a:hover {
 .hero-media-large {
     grid-row: span 2;
     aspect-ratio: 4 / 5;
+}
+
+.hero-partner-strip {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 1.25rem;
+    align-items: center;
+    margin-top: clamp(2rem, 5vh, 4rem);
+    padding: 0.35rem 0;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+}
+
+.hero-partner-strip p {
+    margin: 0;
+    color: #344055;
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.hero-partner-logos {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.65rem;
+    align-items: center;
+}
+
+.hero-partner-logos a {
+    display: flex;
+    min-height: 3.4rem;
+    align-items: center;
+    justify-content: center;
+    padding: 0.45rem 0.65rem;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-highlight {
+        animation: none;
+        background-size: 100% 0.34em;
+    }
+}
+
+.hero-partner-logos img {
+    max-height: 2.25rem;
+    width: auto;
+    object-fit: contain;
+    filter: grayscale(1) contrast(1.05);
+    opacity: 0.72;
 }
 
 .section-pad {
@@ -2108,7 +2211,7 @@ footer .pt-3 {
 
 @media (max-width: 991.98px) {
     .site-hero {
-        padding: 4rem 0;
+        padding: 2rem 0 1.25rem;
     }
 
     .hero-grid,
@@ -2133,6 +2236,15 @@ footer .pt-3 {
     .project-grid,
     .brand-cloud {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .hero-partner-strip {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .hero-partner-logos {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .service-grid-secondary {
@@ -2165,10 +2277,14 @@ footer .pt-3 {
         min-height: var(--nav-height);
     }
 
-    .site-hero,
     .page-hero,
     .section-pad {
         padding-block: 3.25rem;
+    }
+
+    .site-hero {
+        min-height: 100dvh;
+        padding-block: 1.5rem 1rem;
     }
 
     .page-hero h1,
@@ -2202,6 +2318,18 @@ footer .pt-3 {
     .brand-cloud,
     .quotation-form-grid {
         grid-template-columns: 1fr;
+    }
+
+    .hero-partner-logos {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .hero-partner-logos a {
+        min-height: 3rem;
+    }
+
+    .hero-partner-logos img {
+        max-height: 1.9rem;
     }
 
     .project-blog-grid .project-story-card:first-child {
