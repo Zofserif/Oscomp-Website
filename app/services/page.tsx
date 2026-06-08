@@ -11,7 +11,7 @@ export const revalidate = 300;
 export const metadata: Metadata = metadataFor({
   title: "Services",
   description:
-    "Explore OSCOMP services for CCTV installation, security camera setup, computer repair, networking, cybersecurity, and practical IT solutions.",
+    "Explore OSCOMP services for CCTV installation, security camera setup, attendance and access control, computer repair, custom software development, networking, cybersecurity, and practical IT solutions.",
   path: "/services",
 });
 
@@ -31,7 +31,8 @@ export default async function ServicesPage() {
           <h1>What we can do for you</h1>
           <p>
             Practical support for security camera installation and maintenance,
-            device repair, networking, and IT needs in CALABARZON.
+            attendance and access control, device repair, custom software
+            development, networking, and IT needs in CALABARZON.
           </p>
         </div>
       </section>

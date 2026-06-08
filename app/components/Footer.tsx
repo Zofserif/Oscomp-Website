@@ -10,8 +10,13 @@ export function Footer() {
             <h2 className="fs-6 fw-bold">Services</h2>
             <ul className="list-unstyled">
               <li>
-                <Link href="/services/cctv-sales-and-installation">
-                  CCTV Sales &amp; Installation
+                <Link href="/services/cctv-consultation-and-installation">
+                  CCTV Consultation &amp; Installation
+                </Link>
+              </li>
+              <li>
+                <Link href="/services/attendance-and-access-control">
+                  Attendance &amp; Access Control
                 </Link>
               </li>
               <li>
@@ -21,6 +26,11 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/services/it-solutions">IT Solutions</Link>
+              </li>
+              <li>
+                <Link href="/services/custom-software-solution">
+                  Custom Software
+                </Link>
               </li>
             </ul>
           </div>
@@ -46,7 +56,9 @@ export function Footer() {
               />
               <span>{site.shortName}</span>
             </div>
-            <p className="text-muted copyright">CCTV &amp; Security Services.</p>
+            <p className="text-muted copyright">
+              CCTV &amp; Security Services.
+            </p>
           </div>
         </div>
         <hr />

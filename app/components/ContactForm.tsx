@@ -9,26 +9,42 @@ const serviceGroups = [
       { value: "entry", label: "Entry-Level Security" },
       { value: "ideal", label: "Ideal Home Security" },
       { value: "full", label: "Full Package Security" },
-      { value: "custom", label: "Custom Package Security" }
-    ]
+      { value: "custom", label: "Custom Package Security" },
+    ],
   },
   {
     label: "Electronic Repair",
     options: [
       { value: "computer-repair", label: "Computer Repair" },
-      { value: "electronic-repair", label: "Electronic Repair" }
-    ]
+      { value: "electronic-repair", label: "Electronic Repair" },
+    ],
   },
   {
     label: "IT Solution",
     options: [
-      { value: "networking-cybersecurity", label: "Networking & Cybersecurity" }
-    ]
-  }
+      {
+        value: "networking-cybersecurity",
+        label: "Networking & Cybersecurity",
+      },
+    ],
+  },
+  {
+    label: "Attendance & Access Control",
+    options: [
+      {
+        value: "attendance-access-control",
+        label: "Attendance & Access Control",
+      },
+    ],
+  },
+  {
+    label: "Custom Software",
+    options: [{ value: "custom-software", label: "Custom Software Solution" }],
+  },
 ];
 
 const validServices = new Set(
-  serviceGroups.flatMap((group) => group.options.map((option) => option.value))
+  serviceGroups.flatMap((group) => group.options.map((option) => option.value)),
 );
 
 export function ContactForm() {

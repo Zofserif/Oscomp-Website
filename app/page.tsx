@@ -7,7 +7,7 @@ import { breadcrumbJsonLd, metadataFor } from "./lib/site";
 export const metadata: Metadata = metadataFor({
   title: "OSCOMP - CCTV and IT Solutions",
   description:
-    "OSCOMP provides CCTV installation, security camera setup, networking, cybersecurity, computer repair, and practical IT solutions for homes and businesses.",
+    "OSCOMP provides CCTV installation, security camera setup, attendance and access control, networking, cybersecurity, computer repair, custom software development, and practical IT solutions for homes and businesses.",
   path: "/",
 });
 
@@ -71,6 +71,13 @@ const securityFeatures = [
 
 const secondaryServices = [
   {
+    title: "Attendance and Access Control",
+    description:
+      "Time tracking, door access systems, and biometrics installation for offices, businesses, and organizations.",
+    icon: "security",
+    href: "/services/attendance-and-access-control",
+  },
+  {
     title: "Computer Repairs",
     description:
       "Hardware diagnostics, Windows installation, and practical device support remain available through OSCOMP services.",
@@ -83,6 +90,13 @@ const secondaryServices = [
       "Networking, cybersecurity, office applications, and business technology support are still offered as secondary services.",
     icon: "settings_ethernet",
     href: "/services/it-solutions",
+  },
+  {
+    title: "Custom Software Solution",
+    description:
+      "Business process automation, inventory systems, and booking platforms — tailored software built around how your business works.",
+    icon: "code",
+    href: "/services/custom-software-solution",
   },
 ];
 
@@ -268,9 +282,9 @@ export default function HomePage() {
             <p className="eyebrow">Also available</p>
             <h2>Other OSCOMP services</h2>
             <p>
-              Computer repair, network setup, cybersecurity support, and IT
-              solutions in Quezon are still offered, while this page currently
-              focuses on CCTV and security installation.
+              Attendance and access control, custom software development,
+              computer repair, and IT solutions in Quezon are also available
+              while this page focuses on CCTV and security installation.
             </p>
           </div>
           <div className="service-grid service-grid-secondary">
