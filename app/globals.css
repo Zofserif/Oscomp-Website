@@ -210,7 +210,7 @@ a:hover {
 }
 
 .page-hero {
-    padding: 4.5rem 0 3.75rem;
+    padding: 2.5rem 0 2rem;
     border-bottom: 1px solid var(--line);
 }
 
@@ -282,8 +282,10 @@ a:hover {
 .hero-highlight {
     display: inline-block;
     padding: 0 0.04em 0.08em;
-    background:
-        linear-gradient(rgba(10, 143, 119, 0.32), rgba(10, 143, 119, 0.32))
+    background: linear-gradient(
+            rgba(10, 143, 119, 0.32),
+            rgba(10, 143, 119, 0.32)
+        )
         left 76% / 0 0.34em no-repeat;
     color: inherit;
     animation: hero-highlight-draw 900ms 450ms cubic-bezier(0.22, 1, 0.36, 1)
@@ -843,7 +845,11 @@ a:hover {
     display: grid;
     place-items: center;
     background:
-        linear-gradient(135deg, rgba(9, 105, 168, 0.2), rgba(10, 143, 119, 0.2)),
+        linear-gradient(
+            135deg,
+            rgba(9, 105, 168, 0.2),
+            rgba(10, 143, 119, 0.2)
+        ),
         #172033;
     color: #fff;
 }
@@ -1699,6 +1705,8 @@ a:hover {
 
 .quotation-form-panel {
     padding: 1.5rem;
+    max-width: 720px;
+    margin: 0 auto;
 }
 
 .quotation-form {
@@ -1965,7 +1973,7 @@ a:hover {
 
 .qf-service-icon {
     flex: 0 0 auto;
-    font-family: 'Material Icons';
+    font-family: "Material Icons";
     font-style: normal;
     font-weight: 400;
     font-size: 1.65rem;
@@ -1975,7 +1983,7 @@ a:hover {
     letter-spacing: normal;
     white-space: nowrap;
     direction: ltr;
-    font-feature-settings: 'liga';
+    font-feature-settings: "liga";
 }
 
 .qf-property-cards {
@@ -2191,7 +2199,6 @@ a:hover {
         padding: 0.85rem 0.5rem;
         font-size: 0.78rem;
     }
-
 }
 
 footer.bg-primary-gradient {
@@ -2296,7 +2303,7 @@ footer .pt-3 {
 
     .page-hero,
     .section-pad {
-        padding-block: 3.25rem;
+        padding-block: 2.25rem;
     }
 
     .site-hero {
@@ -2365,9 +2372,7 @@ footer .pt-3 {
         bottom: 0;
         left: 0;
         display: block;
-        padding:
-            0.75rem 1rem
-            calc(0.75rem + env(safe-area-inset-bottom));
+        padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
         background: linear-gradient(
             180deg,
             rgba(248, 251, 255, 0),
@@ -2397,7 +2402,11 @@ footer .pt-3 {
         justify-content: center;
         margin-inline: auto;
         padding: 0.95rem 1.35rem;
-        background: linear-gradient(135deg, var(--brand-blue), var(--brand-teal));
+        background: linear-gradient(
+            135deg,
+            var(--brand-blue),
+            var(--brand-teal)
+        );
         border-radius: 999px;
         box-shadow:
             0 18px 34px rgba(9, 105, 168, 0.26),
@@ -2547,7 +2556,9 @@ footer .pt-3 {
     }
 
     .project-blog-grid .project-story-card:first-child .project-card-media img,
-    .project-blog-grid .project-story-card:first-child .project-video-placeholder {
+    .project-blog-grid
+        .project-story-card:first-child
+        .project-video-placeholder {
         aspect-ratio: 4 / 3;
     }
 

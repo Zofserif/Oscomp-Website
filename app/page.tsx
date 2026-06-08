@@ -147,12 +147,10 @@ export default function HomePage() {
         <div className="container">
           <div className="hero-grid">
             <div className="hero-copy">
-              <p className="eyebrow">
-                For CALABARZON CCTV and Security system installation
-              </p>
+              <p className="eyebrow">For Businesses That Need Security</p>
               <h1>
-                Your <span className="hero-highlight">24/7</span> protection
-                for your business location
+                Your <span className="hero-highlight">24/7</span> CCTV Security
+                Partner in CALABARZON
               </h1>
               <p className="hero-lead">
                 Professional CCTV and security system services that help protect
@@ -194,7 +192,10 @@ export default function HomePage() {
               />
             </div>
           </div>
-          <div className="hero-partner-strip" aria-label="OSCOMP partnered brands">
+          <div
+            className="hero-partner-strip"
+            aria-label="OSCOMP partnered brands"
+          >
             <p>Partnered with</p>
             <div className="hero-partner-logos">
               <div className="hero-partner-logo-track">
@@ -215,7 +216,10 @@ export default function HomePage() {
                   aria-hidden="true"
                 >
                   {brandLinks.map((brand) => (
-                    <span className="hero-partner-logo-duplicate" key={brand.href}>
+                    <span
+                      className="hero-partner-logo-duplicate"
+                      key={brand.href}
+                    >
                       <img src={brand.src} alt="" />
                     </span>
                   ))}
