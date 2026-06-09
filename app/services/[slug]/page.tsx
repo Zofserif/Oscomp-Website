@@ -4,7 +4,11 @@ import { notFound } from "next/navigation";
 import { ImageCarousel } from "../../components/ImageCarousel";
 import { ServiceInquiryModal } from "../../components/ServiceInquiryModal";
 import { getServiceMedia } from "../../lib/service-media";
-import { getServiceBySlug, services } from "../../lib/services";
+import {
+  type ServiceBullet,
+  getServiceBySlug,
+  services,
+} from "../../lib/services";
 import {
   absoluteUrl,
   breadcrumbJsonLd,
@@ -132,7 +136,11 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
               <p>{service.description}</p>
               <ul className="check-list">
                 {service.detailBullets.map((bullet) => (
-                  <li key={bullet}>{bullet}</li>
+                  <li
+                    key={typeof bullet === "string" ? bullet : `${bullet.href}:${bullet.label}`}
+                  >
+                    {renderServiceBullet(bullet)}
+                  </li>
                 ))}
               </ul>
               <ServiceInquiryModal
@@ -145,4 +153,12 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
       </section>
     </main>
   );
+}
+
+function renderServiceBullet(bullet: ServiceBullet) {
+  if (typeof bullet === "string") {
+    return bullet;
+  }
+
+  return <Link href={bullet.href}>{bullet.label}</Link>;
 }

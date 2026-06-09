@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ImageCarousel } from "../components/ImageCarousel";
 import { ServiceInquiryModal } from "../components/ServiceInquiryModal";
 import { getServiceMedia } from "../lib/service-media";
-import { services } from "../lib/services";
+import { type ServiceBullet, services } from "../lib/services";
 import { metadataFor } from "../lib/site";
 
 export const revalidate = 300;
@@ -62,7 +62,11 @@ export default async function ServicesPage() {
                   <p>{service.description}</p>
                   <ul className="check-list">
                     {service.bullets.map((bullet) => (
-                      <li key={bullet}>{bullet}</li>
+                      <li
+                        key={typeof bullet === "string" ? bullet : `${bullet.href}:${bullet.label}`}
+                      >
+                        {renderServiceBullet(bullet)}
+                      </li>
                     ))}
                   </ul>
                   <ServiceInquiryModal
@@ -77,4 +81,12 @@ export default async function ServicesPage() {
       </section>
     </main>
   );
+}
+
+function renderServiceBullet(bullet: ServiceBullet) {
+  if (typeof bullet === "string") {
+    return bullet;
+  }
+
+  return <Link href={bullet.href}>{bullet.label}</Link>;
 }

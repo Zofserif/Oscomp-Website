@@ -161,10 +161,12 @@ export default function HomePage() {
         <div className="container">
           <div className="hero-grid">
             <div className="hero-copy">
-              <p className="eyebrow">For Businesses That Need Security</p>
+              <p className="eyebrow">
+                For Businesses in CALABARZON that needs security
+              </p>
               <h1>
-                Your <span className="hero-highlight">24/7</span> CCTV Security
-                Partner in CALABARZON
+                Your <span className="hero-highlight">24/7</span> CCTV evidence
+                for your Business
               </h1>
               <p className="hero-lead">
                 Professional CCTV and security system services that help protect

@@ -20,6 +20,9 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/cctv-layout-planner">Custom CCTV Layout App</Link>
+              </li>
+              <li>
                 <Link href="/services/electronic-device-and-accessories-repairs">
                   Computer Repairs
                 </Link>

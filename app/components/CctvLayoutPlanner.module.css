@@ -1,0 +1,607 @@
+.plannerShell {
+  --sidebar-width: 272px;
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr) 320px;
+  min-height: 78vh;
+  background: #f3f6fb;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+}
+
+.sidebarExpanded {
+  --sidebar-width: 272px;
+}
+
+.sidebarCollapsed {
+  --sidebar-width: 96px;
+}
+
+.mobileSidebarToggle,
+.sidebarBackdrop {
+  display: none;
+}
+
+.toolRail {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 1rem;
+  background:
+    radial-gradient(circle at top, rgba(56, 189, 248, 0.14), transparent 26%),
+    linear-gradient(180deg, #081121 0%, #132c53 100%);
+  color: #fff;
+}
+
+.toolRailHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-bottom: 0.2rem;
+}
+
+.toolRailHeader > div:first-child {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.toolRailEyebrow {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(186, 230, 253, 0.72);
+}
+
+.toolRailTitle {
+  display: block;
+  font-size: 1rem;
+  color: #f8fafc;
+}
+
+.toolRailStatus {
+  font-size: 0.76rem;
+  color: rgba(226, 232, 240, 0.72);
+}
+
+.sidebarToggleGroup {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.sidebarToggle {
+  appearance: none;
+  border: 1px solid rgba(226, 232, 240, 0.12);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.sidebarToggleDesktop {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebarToggleMobile {
+  display: none;
+}
+
+.toolGroup {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.toolButton,
+.miniButton,
+.dangerButton,
+.presetButton {
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.toolButton {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.8rem 0.85rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: left;
+  border: 1px solid rgba(226, 232, 240, 0.08);
+}
+
+.toolButton:hover,
+.miniButton:hover,
+.presetButton:hover,
+.dangerButton:hover,
+.sidebarToggle:hover,
+.mobileSidebarToggle:hover {
+  transform: translateY(-1px);
+}
+
+.toolButton:hover,
+.miniButton:hover,
+.sidebarToggle:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.toolButtonActive {
+  background: linear-gradient(180deg, #f8fafc 0%, #dbeafe 100%);
+  color: #0f172a;
+  border-color: rgba(191, 219, 254, 0.85);
+  box-shadow: 0 12px 24px rgba(8, 17, 33, 0.22);
+}
+
+.toolButtonIcon {
+  display: inline-flex;
+  width: 2.5rem;
+  height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.toolButtonActive .toolButtonIcon {
+  background: rgba(37, 99, 235, 0.12);
+}
+
+.toolButtonLabelWrap {
+  display: grid;
+  gap: 0.05rem;
+  min-width: 0;
+}
+
+.toolButtonLabel {
+  display: block;
+}
+
+.toolButtonMeta {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: inherit;
+  opacity: 0.72;
+}
+
+.sidebarCollapsed .toolRailHeader > div:first-child,
+.sidebarCollapsed .toolButtonLabelWrap,
+.sidebarCollapsed .canvasSummary {
+  display: none;
+}
+
+.sidebarCollapsed .toolRail {
+  padding-inline: 0.7rem;
+}
+
+.sidebarCollapsed .toolRailHeader {
+  justify-content: center;
+}
+
+.sidebarCollapsed .toolButton {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  padding-inline: 0.5rem;
+}
+
+.sidebarCollapsed .compactButtonRow {
+  grid-template-columns: 1fr;
+}
+
+.sidebarCollapsed .miniButton,
+.sidebarCollapsed .dangerButton {
+  padding-inline: 0.55rem;
+  font-size: 0.74rem;
+}
+
+.toolDivider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.12);
+  margin: 0.2rem 0;
+}
+
+.toolRailFooter {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.compactButtonRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.canvasSummary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.canvasSummary span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.32rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(186, 230, 253, 0.12);
+  border: 1px solid rgba(186, 230, 253, 0.1);
+  color: #dbeafe;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.miniButton,
+.dangerButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.75rem 0.7rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+
+.miniButton {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border-color: rgba(226, 232, 240, 0.08);
+}
+
+.dangerButton {
+  background: linear-gradient(180deg, #fff1f2 0%, #ffe4e6 100%);
+  color: #9f1239;
+  border-color: rgba(244, 63, 94, 0.18);
+}
+
+.buttonIcon {
+  display: inline-flex;
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+}
+
+.buttonIcon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.canvasStage {
+  position: relative;
+  min-width: 0;
+  min-height: 640px;
+  background:
+    radial-gradient(circle at top right, rgba(14, 165, 233, 0.12), transparent 28%),
+    linear-gradient(180deg, #f8fafc 0%, #eef4fb 100%);
+}
+
+.canvasViewport {
+  position: absolute;
+  inset: 0;
+}
+
+.canvasSvg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.crosshair {
+  cursor: crosshair;
+}
+
+.grabbing {
+  cursor: grabbing;
+}
+
+.defaultCursor {
+  cursor: default;
+}
+
+.floatingCard,
+.sidePanel {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(10px);
+}
+
+.floatingCard {
+  position: absolute;
+  left: 1.25rem;
+  bottom: 1.25rem;
+  max-width: 320px;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 16px 30px rgba(15, 23, 42, 0.08);
+  z-index: 2;
+}
+
+.floatingCard p,
+.floatingCard ul {
+  margin: 0;
+}
+
+.floatingCard ul {
+  padding-left: 1rem;
+  color: #475569;
+  font-size: 0.9rem;
+}
+
+.sidePanel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  border-left: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.sidePanelEmpty {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: #64748b;
+}
+
+.sidePanelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.sidePanelHeader h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: #0f172a;
+}
+
+.closeButton {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: #64748b;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.fieldGroup {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.fieldGroup label,
+.fieldLegend {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+.fieldHint {
+  font-size: 0.82rem;
+  color: #64748b;
+}
+
+.rangeInput,
+.numberInput {
+  width: 100%;
+}
+
+.numberInput {
+  padding: 0.65rem 0.75rem;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.presetGrid,
+.swatchGrid,
+.statsGrid {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.presetGrid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.presetButton {
+  padding: 0.45rem 0.2rem;
+  border-radius: 10px;
+  background: #e2e8f0;
+  color: #334155;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.swatchGrid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.swatchButton {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  border: 3px solid transparent;
+  cursor: pointer;
+}
+
+.swatchButtonActive {
+  border-color: #0f172a;
+}
+
+.statsGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.statCard {
+  padding: 0.75rem;
+  background: #fff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 12px;
+}
+
+.statCard strong {
+  display: block;
+  color: #0f172a;
+}
+
+.panelSpacer {
+  margin-top: auto;
+}
+
+.pageIntro {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.pageIntro p {
+  margin: 0;
+}
+
+.plannerCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 700;
+  color: #0a5eb7;
+}
+
+@media (max-width: 1180px) {
+  .plannerShell {
+    grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+  }
+
+  .sidePanel {
+    grid-column: 1 / -1;
+    border-left: 0;
+    border-top: 1px solid rgba(15, 23, 42, 0.08);
+  }
+}
+
+@media (max-width: 900px) {
+  .plannerShell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mobileSidebarToggle {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 8;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.65rem 0.9rem;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #0f172a;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
+    cursor: pointer;
+  }
+
+  .mobileSidebarButtonText {
+    font-size: 0.82rem;
+    font-weight: 800;
+  }
+
+  .sidebarBackdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 9;
+    display: block;
+    border: 0;
+    background: rgba(8, 15, 28, 0.28);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .sidebarBackdropVisible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .toolRail {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: min(84vw, 320px);
+    max-width: 320px;
+    transform: translateX(-104%);
+    transition: transform 0.24s ease;
+    box-shadow: 18px 0 48px rgba(8, 15, 28, 0.22);
+  }
+
+  .sidebarMobileOpen .toolRail {
+    transform: translateX(0);
+  }
+
+  .sidebarToggleDesktop {
+    display: none;
+  }
+
+  .sidebarToggleMobile {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .canvasStage {
+    min-height: clamp(420px, 64vh, 720px);
+  }
+
+  .floatingCard {
+    left: 1rem;
+    right: 1rem;
+    max-width: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .plannerShell {
+    border-radius: 16px;
+  }
+
+  .toolRail {
+    width: min(88vw, 320px);
+  }
+
+  .compactButtonRow,
+  .presetGrid,
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .canvasStage {
+    min-height: 420px;
+  }
+
+  .sidePanel {
+    padding: 1rem;
+  }
+}

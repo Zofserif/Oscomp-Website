@@ -54,8 +54,8 @@ export type Service = {
   category: string;
   description: string;
   detailDescription: string;
-  bullets: string[];
-  detailBullets: string[];
+  bullets: ServiceBullet[];
+  detailBullets: ServiceBullet[];
   cta: string;
   mediaFolder: string;
   fallbackMedia: ServiceMedia[];
@@ -69,6 +69,13 @@ export type ServiceMedia = {
   alt?: string;
   title?: string;
 };
+
+export type ServiceBullet =
+  | string
+  | {
+      label: string;
+      href: string;
+    };
 
 export const services: Service[] = [
   {
@@ -113,12 +120,18 @@ export const services: Service[] = [
       "For your security system support needs, OSCOMP offers repair and maintenance services for CCTV systems, including troubleshooting, device repairs, and system maintenance to ensure optimal performance and security for homes and businesses across CALABARZON.",
     bullets: [
       "CCTV system Layout and Planning",
-      "Business and Home security consultation",
+      {
+        label: "Try the Custom CCTV Layout App now",
+        href: "/cctv-layout-planner",
+      },
       "Security Design and planning",
     ],
     detailBullets: [
       "Site-based camera placement recommendations",
-      "Home and Business security consultation and solution planning",
+      {
+        label: "Try the Custom CCTV Layout App before requesting your consultation",
+        href: "/cctv-layout-planner",
+      },
       "Package design and planning for CCTV systems",
       "Alarm system layout and planning",
     ],
