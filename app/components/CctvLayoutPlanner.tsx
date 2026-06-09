@@ -274,10 +274,7 @@ export function CctvLayoutPlanner() {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
 
-  const blockingSegments = useMemo(
-    () => [...walls, ...doors, ...obstacles.flatMap(obstacleToSegments)],
-    [walls, doors, obstacles],
-  );
+  const blockingSegments = useMemo(() => [...walls], [walls]);
 
   const selectedCamera =
     selectedType === "camera"
