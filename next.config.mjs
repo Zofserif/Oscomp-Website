@@ -5,35 +5,25 @@ const nextConfig = {
       {
         source: "/index.html",
         destination: "/",
-        permanent: true
+        permanent: true,
       },
       {
         source: "/services.html",
         destination: "/services",
-        permanent: true
-      },
-      {
-        source: "/pricing",
-        destination: "/quotation",
-        permanent: true
-      },
-      {
-        source: "/pricing.html",
-        destination: "/quotation",
-        permanent: true
+        permanent: true,
       },
       {
         source: "/contacts.html",
         destination: "/contact",
-        permanent: true
+        permanent: true,
       },
       {
         source: "/projects.html",
         destination: "/projects",
-        permanent: true
-      }
+        permanent: true,
+      },
     ];
-  }
+  },
 };
 
 export default nextConfig;

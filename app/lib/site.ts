@@ -42,6 +42,7 @@ export const site = {
 export const routes = [
   { path: "/", label: "Home", priority: 1 },
   { path: "/services", label: "Services", priority: 0.9 },
+  { path: "/pricing", label: "Pricing", priority: 0.85 },
   { path: "/quotation", label: "Inquiry", priority: 0.8 },
   { path: "/projects", label: "Projects", priority: 0.6 },
   { path: "/contact", label: "Contact", priority: 0.8 },

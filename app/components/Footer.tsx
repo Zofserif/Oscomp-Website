@@ -3,53 +3,11 @@ import { site } from "../lib/site";
 
 export function Footer() {
   return (
-    <footer className="bg-primary-gradient">
-      <div className="container py-4 py-lg-5">
-        <div className="row justify-content-center">
-          <div className="col-sm-4 col-md-3 text-center text-lg-start d-flex flex-column item">
-            <h2 className="fs-6 fw-bold">Services</h2>
-            <ul className="list-unstyled">
-              <li>
-                <Link href="/services/cctv-consultation-and-installation">
-                  CCTV Consultation &amp; Installation
-                </Link>
-              </li>
-              <li>
-                <Link href="/services/attendance-and-access-control">
-                  Attendance &amp; Access Control
-                </Link>
-              </li>
-              <li>
-                <Link href="/cctv-layout-planner">Custom CCTV Layout App</Link>
-              </li>
-              <li>
-                <Link href="/services/electronic-device-and-accessories-repairs">
-                  Computer Repairs
-                </Link>
-              </li>
-              <li>
-                <Link href="/services/it-solutions">IT Solutions</Link>
-              </li>
-              <li>
-                <Link href="/services/custom-software-solution">
-                  Custom Software
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <div className="col-sm-4 col-md-3 text-center text-lg-start d-flex flex-column item">
-            <h2 className="fs-6 fw-bold">Company</h2>
-            <ul className="list-unstyled">
-              <li>
-                <Link href="/projects">Projects</Link>
-              </li>
-              <li>
-                <Link href="/contact">Contact</Link>
-              </li>
-            </ul>
-          </div>
-          <div className="col-lg-3 text-center text-lg-start d-flex flex-column align-items-center order-first align-items-lg-start order-lg-last item social">
-            <div className="fw-bold d-flex align-items-center mb-2 footer-brand">
+    <footer className="site-footer">
+      <div className="container">
+        <div className="site-footer-shell">
+          <div className="site-footer-brand-block">
+            <div className="footer-brand">
               <img
                 className="brand-logo"
                 src={site.logo}
@@ -59,16 +17,68 @@ export function Footer() {
               />
               <span>{site.shortName}</span>
             </div>
-            <p className="text-muted copyright">
-              CCTV &amp; Security Services.
+            <p className="site-footer-tagline">
+              CCTV, security, and practical IT support for homes and businesses.
             </p>
           </div>
+
+          <div className="site-footer-links">
+            <div className="site-footer-column">
+              <h2>Services</h2>
+              <ul>
+                <li>
+                  <Link href="/services/cctv-consultation-and-installation">
+                    CCTV Consultation &amp; Installation
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/services/attendance-and-access-control">
+                    Attendance &amp; Access Control
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/cctv-layout-planner">Custom CCTV Layout App</Link>
+                </li>
+                <li>
+                  <Link href="/services/electronic-device-and-accessories-repairs">
+                    Computer Repairs
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/services/it-solutions">IT Solutions</Link>
+                </li>
+                <li>
+                  <Link href="/services/custom-software-solution">
+                    Custom Software
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            <div className="site-footer-column">
+              <h2>Company</h2>
+              <ul>
+                <li>
+                  <Link href="/projects">Projects</Link>
+                </li>
+                <li>
+                  <Link href="/pricing">Pricing</Link>
+                </li>
+                <li>
+                  <Link href="/contact">Contact</Link>
+                </li>
+                <li>
+                  <Link href="/quotation">Inquiry</Link>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
-        <hr />
-        <div className="text-muted d-flex justify-content-between align-items-center pt-3">
-          <p className="mb-0">Copyright © 2022 OSCOMP IT SOLUTION</p>
-          <ul className="list-inline mb-0" aria-label="Social links">
-            <li className="list-inline-item">
+
+        <div className="site-footer-bottom">
+          <p>Copyright © 2022 OSCOMP IT SOLUTION</p>
+          <ul className="site-footer-social" aria-label="Social links">
+            <li>
               <span aria-label="Facebook" role="img">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

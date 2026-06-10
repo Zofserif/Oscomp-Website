@@ -64,7 +64,7 @@ export function Nav() {
           className={`collapse navbar-collapse${isOpen ? " show" : ""}`}
           id="navcol-1"
         >
-          <ul className="navbar-nav mx-auto">
+          <ul className="navbar-nav nav-route-list">
             {routes.map((route) => {
               const active = pathname === route.path;
 
@@ -82,13 +82,15 @@ export function Nav() {
               );
             })}
           </ul>
-          <Link
-            className="btn btn-primary shadow"
-            href="/quotation"
-            onClick={() => setOpenPathname(null)}
-          >
-            Inquire Now
-          </Link>
+          <div className="nav-cta-shell nav-cta-shell-desktop">
+            <Link
+              className="btn btn-primary shadow"
+              href="/quotation"
+              onClick={() => setOpenPathname(null)}
+            >
+              Inquire Now
+            </Link>
+          </div>
         </div>
       </div>
     </nav>

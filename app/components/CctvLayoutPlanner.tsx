@@ -50,7 +50,19 @@ type Point = {
 const PIXELS_PER_METER = 20;
 const DEFAULT_GRID_SIZE = 20;
 const CANVAS_EXTENT = 3200;
+const DEFAULT_EXPORT_VIEWBOX = { x: 0, y: 0, width: 1200, height: 760 };
+const EXPORT_PADDING = 80;
+const CAMERA_MARKER_RADIUS = 10;
+const CAMERA_SELECTION_RADIUS = 14;
+const CAMERA_DIRECTION_MARKER_LENGTH = 16;
 const COLOR_SWATCHES = ["#ef4444", "#f59e0b", "#10b981", "#3b82f6", "#8b5cf6"];
+
+type Bounds = {
+  minX: number;
+  minY: number;
+  maxX: number;
+  maxY: number;
+};
 
 function makeId() {
   return Math.random().toString(36).slice(2, 10);
@@ -250,6 +262,107 @@ function metersFromPixels(value: number) {
   return (value / PIXELS_PER_METER).toFixed(2);
 }
 
+function expandBounds(bounds: Bounds, amount: number): Bounds {
+  return {
+    minX: bounds.minX - amount,
+    minY: bounds.minY - amount,
+    maxX: bounds.maxX + amount,
+    maxY: bounds.maxY + amount,
+  };
+}
+
+function mergeBounds(current: Bounds | null, next: Bounds): Bounds {
+  if (!current) {
+    return next;
+  }
+
+  return {
+    minX: Math.min(current.minX, next.minX),
+    minY: Math.min(current.minY, next.minY),
+    maxX: Math.max(current.maxX, next.maxX),
+    maxY: Math.max(current.maxY, next.maxY),
+  };
+}
+
+function getSegmentBounds(segment: Segment): Bounds {
+  const halfThickness = segment.thickness / 2;
+
+  return {
+    minX: Math.min(segment.startX, segment.endX) - halfThickness,
+    minY: Math.min(segment.startY, segment.endY) - halfThickness,
+    maxX: Math.max(segment.startX, segment.endX) + halfThickness,
+    maxY: Math.max(segment.startY, segment.endY) + halfThickness,
+  };
+}
+
+function getObstacleBounds(obstacle: Obstacle): Bounds {
+  return {
+    minX: obstacle.x,
+    minY: obstacle.y,
+    maxX: obstacle.x + obstacle.w,
+    maxY: obstacle.y + obstacle.h,
+  };
+}
+
+function getCameraBounds(camera: Camera, isSelected: boolean): Bounds {
+  const markerRadius = Math.max(
+    CAMERA_MARKER_RADIUS,
+    isSelected ? CAMERA_SELECTION_RADIUS : 0,
+    CAMERA_DIRECTION_MARKER_LENGTH,
+  );
+
+  return {
+    minX: camera.x - camera.range,
+    minY: camera.y - camera.range - markerRadius,
+    maxX: camera.x + camera.range,
+    maxY: camera.y + camera.range,
+  };
+}
+
+function getExportViewBox({
+  walls,
+  doors,
+  obstacles,
+  cameras,
+  selectedId,
+}: {
+  walls: Segment[];
+  doors: Segment[];
+  obstacles: Obstacle[];
+  cameras: Camera[];
+  selectedId: string | null;
+}) {
+  let combinedBounds: Bounds | null = null;
+
+  for (const segment of [...walls, ...doors]) {
+    combinedBounds = mergeBounds(combinedBounds, getSegmentBounds(segment));
+  }
+
+  for (const obstacle of obstacles) {
+    combinedBounds = mergeBounds(combinedBounds, getObstacleBounds(obstacle));
+  }
+
+  for (const camera of cameras) {
+    combinedBounds = mergeBounds(
+      combinedBounds,
+      getCameraBounds(camera, camera.id === selectedId),
+    );
+  }
+
+  if (!combinedBounds) {
+    return DEFAULT_EXPORT_VIEWBOX;
+  }
+
+  const paddedBounds = expandBounds(combinedBounds, EXPORT_PADDING);
+
+  return {
+    x: paddedBounds.minX,
+    y: paddedBounds.minY,
+    width: Math.max(1, paddedBounds.maxX - paddedBounds.minX),
+    height: Math.max(1, paddedBounds.maxY - paddedBounds.minY),
+  };
+}
+
 export function CctvLayoutPlanner() {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const [walls, setWalls] = useState<Segment[]>([]);
@@ -321,21 +434,36 @@ export function CctvLayoutPlanner() {
 
     try {
       const clonedSvg = svgRef.current.cloneNode(true) as SVGSVGElement;
-      const viewBox = clonedSvg.viewBox.baseVal;
+      const exportLayer = clonedSvg.querySelector("g");
+      const exportViewBox = getExportViewBox({
+        walls,
+        doors,
+        obstacles,
+        cameras,
+        selectedId,
+      });
       const namespace = "http://www.w3.org/2000/svg";
       const background = document.createElementNS(namespace, "rect");
 
-      background.setAttribute("x", String(viewBox.x));
-      background.setAttribute("y", String(viewBox.y));
-      background.setAttribute("width", String(viewBox.width));
-      background.setAttribute("height", String(viewBox.height));
+      background.setAttribute("x", String(exportViewBox.x));
+      background.setAttribute("y", String(exportViewBox.y));
+      background.setAttribute("width", String(exportViewBox.width));
+      background.setAttribute("height", String(exportViewBox.height));
       background.setAttribute("fill", "#f8fafc");
       clonedSvg.insertBefore(background, clonedSvg.firstChild);
 
+      if (exportLayer) {
+        exportLayer.setAttribute("transform", "translate(0, 0) scale(1)");
+      }
+
       clonedSvg.setAttribute("xmlns", namespace);
       clonedSvg.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
-      clonedSvg.setAttribute("width", String(viewBox.width));
-      clonedSvg.setAttribute("height", String(viewBox.height));
+      clonedSvg.setAttribute(
+        "viewBox",
+        `${exportViewBox.x} ${exportViewBox.y} ${exportViewBox.width} ${exportViewBox.height}`,
+      );
+      clonedSvg.setAttribute("width", String(exportViewBox.width));
+      clonedSvg.setAttribute("height", String(exportViewBox.height));
 
       const serialized = new XMLSerializer().serializeToString(clonedSvg);
       const blob = new Blob([serialized], {
@@ -353,8 +481,8 @@ export function CctvLayoutPlanner() {
 
         const canvas = document.createElement("canvas");
         const scaleFactor = 2;
-        canvas.width = viewBox.width * scaleFactor;
-        canvas.height = viewBox.height * scaleFactor;
+        canvas.width = exportViewBox.width * scaleFactor;
+        canvas.height = exportViewBox.height * scaleFactor;
 
         const context = canvas.getContext("2d");
         if (!context) {
@@ -859,7 +987,11 @@ export function CctvLayoutPlanner() {
         onPointerLeave={handleCanvasPointerUp}
       >
         <div className={styles.canvasViewport}>
-          <svg ref={svgRef} className={styles.canvasSvg} viewBox={`0 0 1200 760`}>
+          <svg
+            ref={svgRef}
+            className={styles.canvasSvg}
+            viewBox={`${DEFAULT_EXPORT_VIEWBOX.x} ${DEFAULT_EXPORT_VIEWBOX.y} ${DEFAULT_EXPORT_VIEWBOX.width} ${DEFAULT_EXPORT_VIEWBOX.height}`}
+          >
             <g transform={`translate(${pan.x}, ${pan.y}) scale(${scale})`}>
               {Array.from({ length: (CANVAS_EXTENT * 2) / gridSize + 1 }, (_, index) => {
                 const value = -CANVAS_EXTENT + index * gridSize;
